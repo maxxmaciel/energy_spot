@@ -1,0 +1,118 @@
+import { CloudUpload } from '@mui/icons-material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import React, { useRef } from 'react';
+import { FaArchive } from 'react-icons/fa';
+import ContainerMain from '../../../components/ContainerMain';
+import WindowComponent from '../../../components/WindowComponent/WindowComponent';
+import { FileList, FileListItem, FileName, UploadIndicator } from './UploadFranqueadoStyles';
+import { useUploadFranqueado } from './useUploadFranqueado';
+
+const UploadFranqueado: React.FC = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const refInputTypeArchive = useRef<HTMLInputElement>(null);
+  const refInputOrientation = useRef<HTMLInputElement>(null);
+  const {
+    files,
+    open,
+    errorModalOpen,
+    currentFileIndex,
+    FormDataInp,
+    errorMessages,
+    errorFileNames,
+    loadingModal,
+    formError,
+    handleFileChange,
+    handleOpenModal,
+    handleCloseModal,
+    handleCloseSingleErrorModal,
+    handleFormChange,
+    handleSubmit,
+    validateForm,
+    setFormError,
+    
+
+  } = useUploadFranqueado({ fileInputRef: fileInputRef, refInputTypeArchive: refInputTypeArchive, refInputOrientation: refInputOrientation });
+
+  //const [formError, setFormError] = useState<boolean>(false);
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const isValid = validateForm();
+    if (isValid) {
+      handleSubmit(e);
+      setFormError(false);
+    } else {
+      setFormError(true);
+    }
+  };
+
+
+  return (
+    <ContainerMain style={{ paddingBottom: '50px' }} >
+      <WindowComponent.Root>
+        <WindowComponent.Header>
+          <WindowComponent.Title>
+            <FaArchive />
+            Incluir Arquivos
+          </WindowComponent.Title>
+        </WindowComponent.Header>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+          <Button
+            variant="contained"
+            component="label"
+            sx={{
+              mb: 2, backgroundColor: 'rgb(31, 45, 61) ', color: 'white',
+              '&:hover': {
+                backgroundColor: 'rgb(31, 45, 61) ', // Mantém a mesma cor de fundo no hover
+              },
+            }}
+          >
+            Escolher Arquivos
+            <input type="file" multiple hidden onChange={handleFileChange} ref={fileInputRef} />
+
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleOpenModal(0)}
+            disabled={files.length === 0}
+            sx={{
+              backgroundColor: 'rgb(31, 45, 61) ', color: 'white', mb: 2,
+              '&:hover': {
+                backgroundColor: 'rgb(31, 45, 61) ', // Mantém a mesma cor de fundo no hover
+              },
+            }}
+          >
+            Enviar
+          </Button>
+
+          <FileList>
+            {files.map((file, idx) => (
+              <FileListItem key={idx}>
+                <FileName>{file.nome}</FileName>
+                <UploadIndicator>
+                  {file.uploading ? (
+                    <CircularProgress size={20} style={{ marginRight: 5 }} />
+                  ) : file.uploaded ? (
+                    <Typography variant="body2" color="green" style={{ marginRight: 5 }}>✔️</Typography> // Ícone de upload completo
+                  ) : (
+                    <CloudUpload style={{ marginRight: 5 }} />
+                  )}
+                  <Typography variant="body2" color="rgb(31, 45, 61) ">
+                    {file.uploading
+                      ? `Carregando ${file.uploadProgress}%`
+                      : file.uploaded
+                        ? 'Upload completo'
+                        : 'Pronto para upload'}
+                  </Typography>
+                </UploadIndicator>
+              </FileListItem>
+            ))}
+          </FileList>
+
+        </Box>
+      </WindowComponent.Root>
+    </ContainerMain>
+  );
+};
+
+export default UploadFranqueado;

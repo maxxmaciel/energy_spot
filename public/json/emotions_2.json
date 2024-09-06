@@ -1,0 +1,399 @@
+{
+  "begin": "2024/05/31 10:00:00",
+  "data": {
+    "n": "root",
+    "o": [
+      {
+        "n": "female",
+        "o": [
+          {
+            "n": "adult",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 1,
+                "vd": 17532
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 5216
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 24,
+                "vd": 217315
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 2202
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 8,
+                "vd": 81063
+              }
+            ],
+            "t": "age",
+            "v": 33,
+            "vd": 323328
+          },
+          {
+            "n": "kid",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 926
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 2,
+                "vd": 7913
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 39,
+                "vd": 259886
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 1,
+                "vd": 3383
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 3,
+                "vd": 17681
+              }
+            ],
+            "t": "age",
+            "v": 45,
+            "vd": 289789
+          },
+          {
+            "n": "old",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 2,
+                "vd": 22335
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 0
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 9,
+                "vd": 29127
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 0
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 3,
+                "vd": 34589
+              }
+            ],
+            "t": "age",
+            "v": 14,
+            "vd": 86051
+          },
+          {
+            "n": "undefined",
+            "o": [],
+            "t": "age",
+            "v": 0,
+            "vd": 0
+          },
+          {
+            "n": "young",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 2793
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 5,
+                "vd": 22690
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 55,
+                "vd": 258043
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 4,
+                "vd": 11827
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 11,
+                "vd": 53080
+              }
+            ],
+            "t": "age",
+            "v": 75,
+            "vd": 348433
+          }
+        ],
+        "t": "gender",
+        "v": 167,
+        "vd": 1047601
+      },
+      {
+        "n": "male",
+        "o": [
+          {
+            "n": "adult",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 3,
+                "vd": 19412
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 9,
+                "vd": 55138
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 57,
+                "vd": 451610
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 111
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 17,
+                "vd": 162185
+              }
+            ],
+            "t": "age",
+            "v": 86,
+            "vd": 688456
+          },
+          {
+            "n": "kid",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 0
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 1,
+                "vd": 2893
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 18,
+                "vd": 69616
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 1296
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 1,
+                "vd": 1899
+              }
+            ],
+            "t": "age",
+            "v": 20,
+            "vd": 75704
+          },
+          {
+            "n": "old",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 4,
+                "vd": 18694
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 5,
+                "vd": 26329
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 38,
+                "vd": 202506
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 0
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 10,
+                "vd": 58220
+              }
+            ],
+            "t": "age",
+            "v": 57,
+            "vd": 305749
+          },
+          {
+            "n": "undefined",
+            "o": [],
+            "t": "age",
+            "v": 0,
+            "vd": 0
+          },
+          {
+            "n": "young",
+            "o": [
+              {
+                "n": "angry",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 3899
+              },
+              {
+                "n": "happy",
+                "o": [],
+                "t": "emotion",
+                "v": 6,
+                "vd": 15536
+              },
+              {
+                "n": "neutral",
+                "o": [],
+                "t": "emotion",
+                "v": 86,
+                "vd": 385558
+              },
+              {
+                "n": "surprise",
+                "o": [],
+                "t": "emotion",
+                "v": 0,
+                "vd": 0
+              },
+              {
+                "n": "undefined",
+                "o": [],
+                "t": "emotion",
+                "v": 18,
+                "vd": 89815
+              }
+            ],
+            "t": "age",
+            "v": 110,
+            "vd": 494808
+          }
+        ],
+        "t": "gender",
+        "v": 273,
+        "vd": 1564717
+      },
+      {
+        "n": "undefined",
+        "o": [],
+        "t": "gender",
+        "v": 0,
+        "vd": 0
+      }
+    ],
+    "ots": 1803,
+    "otsd": 11700440,
+    "t": "root",
+    "v": 440,
+    "vd": 2612318
+  },
+  "end": "2024/06/07 10:00:00",
+  "levels": ["genders", "ages", "emotions"],
+  "ok": 1,
+  "path": "genders/ages/emotions",
+  "user_id": 343
+}

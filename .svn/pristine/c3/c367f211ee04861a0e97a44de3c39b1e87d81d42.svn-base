@@ -1,0 +1,181 @@
+html {
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  min-height: 100vh;
+}
+
+body {
+  font-family: "Lato";
+  -webkit-font-smoothing: antialiased;
+  background: #ebeef0;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("../src/fonts/Lato/Lato-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Lato Black";
+  src: url("../src/fonts/Lato/Lato-Black.ttf");
+}
+
+@font-face {
+  font-family: "Lato Bold";
+  src: url("../src/fonts/Lato/Lato-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Lato Regular";
+  src: url("../src/fonts/Lato/Lato-Regular.ttf");
+}
+
+button,
+.c_logo {
+  cursor: pointer;
+}
+
+* {
+  border: 0;
+  padding: 0;
+  position: relative;
+  margin: 0;
+  outline: 0;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar {
+  background-color: rgb(57, 57, 57);
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
+  border: 4px solid rgb(57, 57, 57);
+}
+
+body::-webkit-scrollbar {
+  background-color: rgb(67, 67, 67);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  background-color: #000;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background-color: #000;
+}
+
+#c_calendar_bananas .react-datepicker__header {
+  background-color: rgb(67, 67, 67);
+}
+
+#c_calendar_bananas .react-datepicker__current-month {
+  color: #fff;
+}
+
+#c_calendar_bananas .react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected,
+.react-datepicker__year-text--keyboard-selected {
+  background: rgba(254, 219, 71);
+}
+
+#c_calendar_bananas .react-datepicker__day--selected {
+  background: rgba(254, 219, 71);
+}
+
+#c_calendar_bananas .react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range,
+.react-datepicker__month-text--selected,
+.react-datepicker__month-text--in-selecting-range,
+.react-datepicker__month-text--in-range,
+.react-datepicker__quarter-text--selected,
+.react-datepicker__quarter-text--in-selecting-range,
+.react-datepicker__quarter-text--in-range,
+.react-datepicker__year-text--selected,
+.react-datepicker__year-text--in-selecting-range,
+.react-datepicker__year-text--in-range {
+  background: rgba(254, 219, 71);
+}
+#c_calendar_bananas .react-datepicker__day--in-selecting-range {
+  background: rgba(254, 219, 71);
+}
+
+#c_calendar_bananas .react-datepicker__day:hover {
+  background: rgba(254, 219, 71);
+}
+
+#c_calendar_bananas .react-datepicker__day--in-range {
+  background: rgba(254, 219, 71);
+}
+
+#c_calendar_bananas .react-datepicker__day-name {
+  color: #fff;
+}
+
+#c_calendar_bananas .react-datepicker__day {
+  color: #000 !important;
+}
+
+#c_calendar_seemetrix .react-datepicker__header {
+  background-color: rgb(67, 67, 67);
+}
+
+#c_calendar_seemetrix .react-datepicker__current-month {
+  color: #fff;
+}
+
+#c_calendar_seemetrix .react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected,
+.react-datepicker__year-text--keyboard-selected {
+  background: rgba(58, 179, 176);
+}
+
+#c_calendar_seemetrix .react-datepicker__day--selected {
+  background: rgba(58, 179, 176);
+}
+
+#c_calendar_seemetrix .react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range,
+.react-datepicker__month-text--selected,
+.react-datepicker__month-text--in-selecting-range,
+.react-datepicker__month-text--in-range,
+.react-datepicker__quarter-text--selected,
+.react-datepicker__quarter-text--in-selecting-range,
+.react-datepicker__quarter-text--in-range,
+.react-datepicker__year-text--selected,
+.react-datepicker__year-text--in-selecting-range,
+.react-datepicker__year-text--in-range {
+  background: rgba(58, 179, 176);
+}
+#c_calendar_seemetrix .react-datepicker__day--in-selecting-range {
+  background: rgba(58, 179, 176);
+}
+
+#c_calendar_seemetrix .react-datepicker__day:hover {
+  background: rgba(58, 179, 176);
+}
+
+#c_calendar_seemetrix .react-datepicker__day--in-range {
+  background: rgba(58, 179, 176);
+}
+
+#c_calendar_seemetrix .react-datepicker__day-name {
+  color: #fff;
+}
+
+#c_calendar_seemetrix .react-datepicker__day {
+  color: #000 !important;
+}
+
+

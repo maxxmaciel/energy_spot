@@ -1,0 +1,145 @@
+import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
+import { useRef } from "react";
+import { useUploadFranqueado } from "../../UploadFranqueado/useUploadFranqueado";
+import { modalStyle } from "../ArquivoStyle";
+
+interface UploadModalFormProps {
+    open: boolean
+}
+
+const UploadModalForm = ({ open }: UploadModalFormProps) => {
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const refInputTypeArchive = useRef<HTMLInputElement>(null);
+    const refInputOrientation = useRef<HTMLInputElement>(null);
+
+    const {
+        errorModalOpen,
+        currentFileIndex,
+        FormDataInp,
+        errorMessages,
+        errorFileNames,
+        loadingModal,
+        handleFileChange,
+        handleCloseSingleErrorModal,
+        handleFormChange,
+        handleCloseModal,
+        handleSubmit,
+        validateForm,
+        handleDropChange,
+        handleOpenModal,
+        formError,
+        setFormError,
+        filesUploaded,
+        files
+
+    } = useUploadFranqueado({ fileInputRef: fileInputRef, refInputTypeArchive: refInputTypeArchive, refInputOrientation: refInputOrientation });
+
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const isValid = validateForm();
+        if (isValid) {
+            handleSubmit(e);
+            setFormError(false);
+        } else {
+            setFormError(true);
+        }
+    };
+
+
+    return (<>
+
+        {files.length > 0 && (
+            <Modal
+                open={open}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={modalStyle}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2" color="rgb(31, 45, 61) ">
+                        Arquivo:  {files[currentFileIndex || 0].nome}
+                    </Typography>
+                    <form onSubmit={handleFormSubmit}>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel>Tipo de Arquivo</InputLabel>
+                            <Select
+                                value={FormDataInp.fileType}
+                                onChange={(e) => handleFormChange(e as React.ChangeEvent<{ name?: string; value: unknown }>)}
+                                name="fileType"
+                                error={formError && !FormDataInp.fileType}
+                                sx={{ minWidth: 200 }}
+                                ref={refInputTypeArchive}
+                            >
+                                <MenuItem value="">Selecionar</MenuItem>
+                                <MenuItem value="video">Video</MenuItem>
+                                <MenuItem value="Imagem">Imagem</MenuItem>
+                                <MenuItem value="audio">Audio</MenuItem>
+                                <MenuItem value="samf">Samf</MenuItem>
+                                <MenuItem value="vttfs">VTTFS</MenuItem>
+                                <MenuItem value="fonteOS">FonteOS</MenuItem>
+                                <MenuItem value="fonteBMP">FonteBMP</MenuItem>
+                                <MenuItem value="flash">Flash</MenuItem>
+                                <MenuItem value="slideshow">SlideShow</MenuItem>
+                                <MenuItem value="layoutsite">LayoutSite</MenuItem>
+                                <MenuItem value="videotraining">VideoTraining</MenuItem>
+                                <MenuItem value="executable">Executable</MenuItem>
+                                <MenuItem value="library">Library</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel>Orientação</InputLabel>
+                            <Select
+                                value={FormDataInp.orientation}
+                                onChange={(e) => handleFormChange(e as React.ChangeEvent<{ name?: string; value: unknown }>)}
+                                name="orientation"
+                                error={formError && !FormDataInp.orientation}
+                                sx={{ minWidth: 200 }}
+                                ref={refInputOrientation}
+                            >
+                                <MenuItem value="">Selecionar</MenuItem>
+                                <MenuItem value="horizontal">Horizontal</MenuItem>
+                                <MenuItem value="vertical">Vertical</MenuItem>
+                                <MenuItem value="horizontal_inverted">Horizontal Inverted</MenuItem>
+                                <MenuItem value="vertical_inverted">Vertical Inverted</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal">
+                            <TextField
+                                label="Descrição"
+                                name="description"
+                                value={FormDataInp.description}
+                                onChange={handleFormChange}
+                            />
+                        </FormControl>
+                        <FormControl fullWidth margin="normal">
+                            <TextField
+                                label="Notas"
+                                name="notes"
+                                value={FormDataInp.notes}
+                                onChange={handleFormChange}
+                            />
+                        </FormControl>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{
+                                backgroundColor: 'rgb(31, 45, 61) ', color: 'white',
+                                '&:hover': {
+                                    backgroundColor: 'rgb(31, 45, 61) ', // Mantém a mesma cor de fundo no hover
+                                },
+                            }}
+                        >
+                            Enviar
+                        </Button>
+                    </form>
+                </Box>
+            </Modal>
+        )}
+    </>
+
+
+    )
+}
+
+export default UploadModalForm;

@@ -1,0 +1,184 @@
+{
+    "not_used": [], 
+    "not_used_total": 0, 
+    "used": [
+      {
+        "acl": [
+          343
+        ], 
+        "i": 903, 
+        "last_view": "Fri, 10 May 2024 19:50:43 GMT", 
+        "n": "20240506_Gerdau1_Vert_esq_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 904, 
+        "last_view": "Thu, 06 Jun 2024 13:33:53 GMT", 
+        "n": "20240506_Gerdau2_Vert_esq_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 905, 
+        "last_view": "Wed, 15 May 2024 20:18:00 GMT", 
+        "n": "20240506_Obra_Premiada_VERT_esq_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 906, 
+        "last_view": "Thu, 06 Jun 2024 12:08:27 GMT", 
+        "n": "20240506_Tigre1_Vert_esq_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 907, 
+        "last_view": "Fri, 10 May 2024 20:07:11 GMT", 
+        "n": "20240506_Tigre2_Vert_esq_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 908, 
+        "last_view": "Fri, 10 May 2024 19:58:56 GMT", 
+        "n": "20240506_Votorantim_Vert_esq_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 913, 
+        "last_view": "Thu, 06 Jun 2024 13:05:03 GMT", 
+        "n": "20240510_retail_VC_VERT_esq_ComSom"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 914, 
+        "last_view": "Thu, 06 Jun 2024 13:30:02 GMT", 
+        "n": "20240510_retail_GERDAU_VERT_esq_ComSom"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 915, 
+        "last_view": "Thu, 06 Jun 2024 13:20:26 GMT", 
+        "n": "20240510_retail_TIGRE_VERT_esq_ComSom"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 916, 
+        "last_view": "Thu, 06 Jun 2024 13:32:24 GMT", 
+        "n": "20240506_Gerdau2_H_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 917, 
+        "last_view": "Wed, 29 May 2024 19:29:01 GMT", 
+        "n": "20240502_Promo_Renova_Tudo_Torturella"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 918, 
+        "last_view": "Wed, 15 May 2024 19:17:46 GMT", 
+        "n": "20240506_Obra_Premiada_H_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 919, 
+        "last_view": "Thu, 06 Jun 2024 13:33:28 GMT", 
+        "n": "20240510_retail_TIGRE_1_H_ComSom"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 920, 
+        "last_view": "Thu, 06 Jun 2024 13:33:49 GMT", 
+        "n": "20240510_retail_VC_1_H_ComSom"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 921, 
+        "last_view": "Thu, 06 Jun 2024 13:29:13 GMT", 
+        "n": "20240506_Tigre1_H_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 922, 
+        "last_view": "Thu, 06 Jun 2024 13:33:28 GMT", 
+        "n": "20240510_retail_GERDAU_1_H_ComSom"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 924, 
+        "last_view": "Wed, 29 May 2024 20:41:02 GMT", 
+        "n": "20240515_Obra_Premiada_VERT_esq_COM_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 925, 
+        "last_view": "Wed, 29 May 2024 20:57:07 GMT", 
+        "n": "20240515_Obra_Premiada_H_COM_SOM"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 933, 
+        "last_view": "Thu, 06 Jun 2024 13:28:31 GMT", 
+        "n": "20240529_Votorantim_H"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 934, 
+        "last_view": "Thu, 06 Jun 2024 13:32:24 GMT", 
+        "n": "20240529_Obra_Premiada_H_V2"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 935, 
+        "last_view": "Thu, 06 Jun 2024 12:37:38 GMT", 
+        "n": "20240529_Obra_Premiada_VERT_esq_V2"
+      }, 
+      {
+        "acl": [
+          343
+        ], 
+        "i": 936, 
+        "last_view": "Wed, 05 Jun 2024 19:07:28 GMT", 
+        "n": "20240529_Votorantim_VERT_esq"
+      }
+    ], 
+    "used_total": 22
+  }
+  

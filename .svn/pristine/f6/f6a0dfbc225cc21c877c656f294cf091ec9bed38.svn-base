@@ -1,0 +1,198 @@
+import { Box, Button, Modal, Typography } from '@mui/material';
+import React from 'react';
+import { modalStyle } from '../ArquivoStyle';
+import CloseButton from './CloseButton';
+import ScheduleModal from './ScheduleModal';
+import { UseModalsReturn } from './useModals';
+import ZoneFilesModal from './ZoneFilesModal';
+import { IMachines } from '../ArquivoTypes';
+
+interface ConfigurationModalProps {
+    open: boolean;
+    onClose: () => void;
+    selectedMachines: IMachines[];
+    InstanceUseModals: UseModalsReturn;
+}
+
+const ConfigurationModal: React.FC<ConfigurationModalProps> =
+    ({ open, onClose, selectedMachines, InstanceUseModals }) => {
+        const { resetStates, ConfigurationModalState,
+            handleSetConfigurationModalState, linkingMachinesState,
+            handleConfigConfirm, handleScheduleConfig, styleGlobalModal } = InstanceUseModals;
+
+   
+        const setCurrentConfigIndex = handleSetConfigurationModalState<number>('currentConfigIndex');
+        const setMediaConfig = handleSetConfigurationModalState<(prev: any) => any>('mediaConfig');
+        const handleOpenZoneFilesModal = handleSetConfigurationModalState<boolean>('openZoneFilesModal');
+
+        const { currentConfigIndex, mediaConfig, screenConfigs, openZoneFilesModal } = ConfigurationModalState;
+
+
+        const handleMediaChange = (screen: number, media: string) => {
+            setMediaConfig(prev => ({ ...prev, [screen]: media }));
+            handleOpenZoneFilesModal(true);
+            onClose();
+
+        };
+
+        const handleConfirm = () => {
+            console.log("handle confirm configuration")
+            if (screenConfigs.length === 0) {
+                handleConfigConfirm();
+                //onClose();
+                // resetStates();
+            } else if (currentConfigIndex < screenConfigs.length) {
+                handleScheduleConfig();
+              //  setCurrentConfigIndex(currentConfigIndex + 1);
+            } else {
+                handleConfigConfirm();
+                // onClose();
+                //  resetStates();
+            }
+
+            
+        };
+
+        const handleThankYouModalClose = () => {
+            console.log('Fechando modal de agradecimento c');
+            handleConfigConfirm(); // Verifique se não há um loop de fechamento
+            onClose(); // Fechar o modal de vinculação se necessário
+            resetStates(); // Redefinir os estados
+        };
+        const currentConfig = screenConfigs[currentConfigIndex];
+        const handleCloseZoneFileModals = () => {
+            handleOpenZoneFilesModal(false)
+        }
+
+        return (
+            <>
+                <Modal
+                    open={open}
+                    onClose={onClose}
+                    aria-labelledby="configuration-modal-title"
+                    aria-describedby="configuration-modal-description"
+                    BackdropProps={{
+                        onClick: (e) => e.stopPropagation()
+                    }}
+                >
+                    <Box sx={{ ...modalStyle, width: '60%', maxWidth: '800px', padding: 4 }} style={styleGlobalModal}> 
+                        <Typography variant="h6" id="configuration-modal-title">
+                            Configuração de Telas
+                        </Typography>
+                        <Typography variant="subtitle1" sx={{ marginTop: 2 }}>
+                            Estamos configurando o perfil para {currentConfig?.TotalTelas} Tela(s).
+                        </Typography>
+                        {currentConfig && currentConfig.TotalTelas > 1 ? (
+                            <Box sx={{ marginTop: 2 }} >
+                                <Typography variant="subtitle1">
+                                    Encontramos {currentConfig.count} máquina(s) com {currentConfig.TotalTelas} Tela(s).
+                                    Você gostaria de duplicar o vídeo selecionado em todas as telas ou selecionar outra mídia?
+                                </Typography>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', margin: 2, flexWrap: "wrap" }}>
+                                    {Array.from({ length: currentConfig.TotalTelas }, (_, index) => (
+                                        <Box key={index} sx={{
+                                            position: 'relative', width: '266px',
+                                            height: '150px', margin: '2px', border: '1px solid #ccc',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                        }}>
+                                            <Typography variant="h5">{index + 1}</Typography>
+                                            {index > 0 && (
+                                                <Box
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        bottom: 0,
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                        opacity: 0,
+                                                        transition: 'opacity 0.3s',
+                                                        '&:hover': {
+                                                            opacity: 1,
+                                                            cursor: 'pointer',
+                                                        },
+                                                    }}
+                                                >
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => handleMediaChange(currentConfig.TotalTelas + index + 2, 'outraMidia')}
+                                                    >
+                                                        Selecionar Mídia
+                                                    </Button>
+                                                </Box>
+                                            )}
+                                        </Box>
+                                    ))}
+                                </Box>
+                                <Button
+                                    onClick={handleConfirm}
+                                    color="primary"
+                                    variant="contained"
+                                    sx={{ marginTop: 2 }}
+                                >
+                                    Confirmar Configurações
+                                </Button>
+                            </Box>
+                        ) : (
+                            <Button
+                                onClick={handleConfirm}
+                                color="primary"
+                                variant="contained"
+                                sx={{ marginTop: 2 }}
+                            >
+                                Confirmar Configurações
+                            </Button>
+                        )}
+                        <CloseButton InstanceUseModals={InstanceUseModals} />
+                    </Box>
+                </Modal>
+                <Modal
+                    open={linkingMachinesState.isThankYouModalOpen}
+                    onClose={handleThankYouModalClose}
+                    aria-labelledby="thank-you-modal-title"
+                    aria-describedby="thank-you-modal-description"
+                    BackdropProps={{
+                        onClick: (e) => e.stopPropagation()
+                    }}
+                >
+                    <Box sx={{
+                        ...modalStyle, width: '60%', maxWidth: '800px',
+                        padding: 2
+                    }}>
+                        <Typography variant="h6" id="thank-you-modal-title">
+                            Campanha Criada
+                        </Typography>
+                        <Typography variant="body1" sx={{ marginTop: 2 }}>
+                            A nova campanha foi criada com sucesso!
+                        </Typography>
+                        <Button
+                            onClick={handleThankYouModalClose}
+                            color="primary"
+                            variant="contained"
+                            sx={{ marginTop: 2 }}
+                        >
+                            Fechar
+                        </Button>
+
+
+
+                    </Box>
+                </Modal>
+                <ZoneFilesModal
+                    openZoneFiles={openZoneFilesModal}
+                    onClose={handleCloseZoneFileModals}
+                    InstanceUseModals={InstanceUseModals} />
+                    
+                <ScheduleModal
+                    open={linkingMachinesState.isScheduleConfig}
+                    InstanceUseModals={InstanceUseModals} />
+                    
+            </>
+        );
+    };
+
+export default ConfigurationModal;

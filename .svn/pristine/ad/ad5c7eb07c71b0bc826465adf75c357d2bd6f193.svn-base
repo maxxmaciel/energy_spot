@@ -1,0 +1,223 @@
+
+import { StructureTreeNo } from "../UploadFranqueado/UploadFranqueadoTypes";
+import { UseModalsReturn } from "./Modals/useModals";
+
+export interface ZoneFilesProps {
+  files: StructureTreeNo[];
+  onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
+  onCreateFolder: (folderName: string) => void;
+  onCreateCampaign: (campaignData: any) => void;
+  onCopy: () => void;
+  onPaste: () => void;
+  onDelete: () => void;
+  hasContextMenu: boolean;
+  handleClickArchiveProp: (file: StructureTreeNo | null) => void;
+}
+
+
+export interface LinkingMachinesModalProps {
+  open: boolean;
+  onClose: () => void;
+  InstanceUseModals: UseModalsReturn;
+}
+
+export interface ToolbarProps {
+  onCreateFolder: () => void;
+  onCopy: () => void;
+  onPaste: () => void;
+  onDelete: () => void;
+}
+
+export interface CreateCampaignModalProps {
+  open: boolean;
+  onClose: () => void;
+  onCreateCampaign: (campaignData: {
+    campaignName: string;
+    cliente: string;
+    resumo: string;
+    descricaoCompleta: string;
+    capaResumida: File | null;
+    capaCompleta: File | null;
+  }) => void;
+}
+
+
+export interface LinkingMachinesModalProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export interface IMachines extends IMachine {
+  TotalTelas: number;
+  TotalTelasHorz: number;
+  TotalTelasVert: number;
+}
+
+export interface IMachine {
+  CodMaquina: CodMaquina;
+  CodMaquinaPerfil: number;
+  Maquina: string;
+  MaquinaPerfil: string;
+}
+
+export interface IMachineByConf {
+  CodMaquina: CodMaquina;
+  Maquina: string;
+  MaquinaPerfil: string;
+  MaquinaRegiao: string;
+}
+
+export interface IClients {
+  CodCliente: number,
+  CodProjeto: number,
+  Cliente: string,
+  CNPJRaiz: string,
+  CNPJMatriz: string,
+  RazaoSocial: string,
+  DtAlteracao: number | string
+}
+
+
+export interface IPromotion {
+  CodCampanha: number,
+  CodProjeto: number,
+  CodCliente: string,
+  NmCliente: string,
+  NmCampanha: string,
+  TxDesc: string,
+  TxDescCompleta: string,
+  FlagPromocao: boolean,
+  FlagObrigatoria: boolean,
+  FlagExclusiva: boolean,
+  FlagPromocaoExclusiva: boolean,
+  FlagHorarioFixo: boolean,
+  FlagAtiva: boolean
+}
+
+export interface IConfig {
+  CodConfig: number,
+  CodCampanha: number,
+  CodProjeto: number,
+  Config: string,
+  NumTelas: number,
+  NumTelasH: number,
+  NumTelasV: number,
+  OrientacaoSeq: string,
+  FlagAprovacao: boolean,
+  CodUsuarioAprovacao: number,
+  NmUsuario: string,
+  DhUltAprovacao: number | string,
+  CodUsuarioCriacao: number,
+  DhCriacao: number | string,
+  CodUsuarioAlteracao: number,
+  DhUsuarioAlteracao: number | string,
+  FlagCampanhaBase: boolean,
+  TsAlteracao: number | string,
+  Telas: [],
+  Audios: []
+}
+
+export interface Roteiro {
+  CodArquivo: string;
+  ConfigTelaRoteiro: string;
+  DtInicio: string;
+  DtFim: string;
+  HrInicio: string;
+  HrFim: string;
+  DiasSemana: number;
+  Volume: number;
+  AreaVisao: string;
+  AreaSaida: string;
+  DuracaoMin: number;
+  DuracaoMax: number;
+  FlagPassoPrioritario: boolean;
+  FlagIgnorarPrioritarios: boolean;
+  FlagIgnorarPrioritariosMesmoGrupo: boolean;
+  NumPassosPrioritario: number;
+  FlagTemporal: boolean;
+  FlagIgnorarTemporal: boolean;
+  FlagIgnorarTemporalMesmoGrupo: boolean;
+  TemporalTempoSeg: number;
+  FlagPassoAtivo: boolean;
+  FlagPassoAtivoOnLine: boolean;
+  FlagPassoAtivoOffLine: boolean;
+  FlagLoadOndemand: boolean;
+  FlagReiniciar: boolean;
+  FlagAutoRepetir: boolean;
+  FlagRandom: boolean;
+  MultiScreen: number;
+  GrupoId: number;
+  TriggerType: number;
+  TriggerID: number;
+  TriggerImediato: boolean;
+  TriggerIncondicional: boolean;
+  SchedulerTriggerOnly: boolean;
+  ProcessMouseEvent: boolean;
+  IdleTimeout: number;
+  UsarMaiorTemperatura: boolean;
+  MaiorTemperatura: number;
+  UsarMenorTemperatura: boolean;
+  MenorTemperatura: number;
+  UsarTransito: boolean;
+  Transito: number;
+  UsarTempoOnLine: boolean;
+  TempoOnLine: number;
+  GerarEventoXPBefore: boolean;
+  XPEventIDBefore: string;
+  GerarEventoXP: boolean;
+  XPEventID: string;
+  PeopleCountGo: boolean;
+  PeopleCountStop: boolean;
+  FaceAge: number;
+  FaceAgeMax: number;
+  FaceAgeErrorMax: number;
+  FaceGender: number;
+  FaceGenderErrorMax: number;
+  FaceTimeMin: number;
+  FaceGrupo: number;
+  FaceFamilia: boolean;
+  FaceCasal: boolean;
+  RegExpCond: string;
+  CodUsuarioInclusao: number;
+  DhInclusaoPasso: string;
+  CodUsuarioAlteracao: number;
+  DhAlteracaoPasso: string;
+  DhAlteracaoAtivo: string;
+  NmPromocao: string | null;
+  TxPromocao: string;
+  FlagSpot: boolean;
+}
+
+
+export interface Tela {
+  Worient: number;
+  Wresx: number;
+  Wresy: number;
+  Roteiro: Roteiro[];
+  //
+  NumTelas: number;
+  CodProjeto: number;
+  NumTelasH: number;
+  NumTelasV: number;
+  CodConfig: number;
+  CodConfigTela: number;
+  NumPassos: number;
+  Wcolorbits: number;
+  ConfigTela: string;
+}
+
+export interface Configuracao {
+  CodConfig: number;
+  Config: string;
+  CodCampanha: string;
+  Telas: Tela[];
+  // 
+  NumTelas: number;
+  CodProjeto: number;
+  NumTelasH: number;
+  NumTelasV: number;
+}
+
+export type CodMaquina = number;
+

@@ -1,0 +1,229 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App Component matches the snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-ikkxIA bpFTO"
+  >
+    <form
+      class="c"
+    >
+      <div
+        class="c_logo"
+      >
+        <img
+          alt=""
+          src="logo.png"
+        />
+      </div>
+      <div
+        class="c_inputs"
+      >
+        <div
+          class="c_input"
+        >
+          <div
+            class="c_field_name"
+          >
+            LOGIN:
+          </div>
+          <div
+            class="sc-gEvEer jkxMwE"
+          >
+            <input
+              placeholder="Login"
+              required=""
+              type="text"
+            />
+          </div>
+        </div>
+        <div
+          class="c_input"
+        >
+          <div
+            class="c_field_name"
+          >
+            SENHA:
+          </div>
+          <div
+            class="sc-gEvEer jkxMwE"
+          >
+            <input
+              placeholder="Senha"
+              required=""
+              type="password"
+            />
+          </div>
+          <div
+            class="c_esq_senha"
+          >
+            Esqueci minha senha
+          </div>
+        </div>
+      </div>
+      <button
+        class="sc-aXZVg cvuHKU"
+      >
+        ENTRAR
+      </button>
+    </form>
+    <div
+      class="sc-eqUAAy kGkLkT"
+      display="none"
+    >
+      <div
+        class="c"
+      >
+        <div
+          class="t"
+        >
+           
+          <p>
+            Validando Usuário
+          </p>
+        </div>
+        <div
+          class="button-x buttons-x hide_modal"
+        >
+          <div
+            class="deg45-r hide_modal"
+          />
+          <div
+            class="deg135-r hide_modal"
+          />
+        </div>
+        <div
+          class="c2"
+        >
+           
+          <img
+            alt=""
+            src="spinner.gif"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer
+    class="sc-iGgWBj epYwTF"
+  >
+    <footer>
+      VTT @2024  - VTT@ - 1.0.1 | React - ^18.3.1
+    </footer>
+  </footer>
+</DocumentFragment>
+`;
+
+exports[`matches the snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-ikkxIA bpFTO"
+  >
+    <form
+      class="c"
+    >
+      <div
+        class="c_logo"
+      >
+        <img
+          alt=""
+          src="logo.png"
+        />
+      </div>
+      <div
+        class="c_inputs"
+      >
+        <div
+          class="c_input"
+        >
+          <div
+            class="c_field_name"
+          >
+            LOGIN:
+          </div>
+          <div
+            class="sc-gEvEer jkxMwE"
+          >
+            <input
+              placeholder="Login"
+              required=""
+              type="text"
+            />
+          </div>
+        </div>
+        <div
+          class="c_input"
+        >
+          <div
+            class="c_field_name"
+          >
+            SENHA:
+          </div>
+          <div
+            class="sc-gEvEer jkxMwE"
+          >
+            <input
+              placeholder="Senha"
+              required=""
+              type="password"
+            />
+          </div>
+          <div
+            class="c_esq_senha"
+          >
+            Esqueci minha senha
+          </div>
+        </div>
+      </div>
+      <button
+        class="sc-aXZVg cvuHKU"
+      >
+        ENTRAR
+      </button>
+    </form>
+    <div
+      class="sc-eqUAAy kGkLkT"
+      display="none"
+    >
+      <div
+        class="c"
+      >
+        <div
+          class="t"
+        >
+           
+          <p>
+            Validando Usuário
+          </p>
+        </div>
+        <div
+          class="button-x buttons-x hide_modal"
+        >
+          <div
+            class="deg45-r hide_modal"
+          />
+          <div
+            class="deg135-r hide_modal"
+          />
+        </div>
+        <div
+          class="c2"
+        >
+           
+          <img
+            alt=""
+            src="spinner.gif"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer
+    class="sc-iGgWBj epYwTF"
+  >
+    <footer>
+      VTT @2024  - VTT@ - 1.0.1 | React - ^18.3.1
+    </footer>
+  </footer>
+</DocumentFragment>
+`;

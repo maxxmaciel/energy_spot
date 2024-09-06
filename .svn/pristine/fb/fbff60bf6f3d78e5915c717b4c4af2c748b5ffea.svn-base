@@ -1,0 +1,80 @@
+import styled from "styled-components";
+
+const HomeStyled = styled.div`
+    font-family: "Lato Bold";
+    color: rgb(109, 113, 116);
+    
+   
+
+.c_img_loading{
+  position: absolute;
+    inset: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    background: #fff;
+  }
+ >.c {
+    margin: 0 25px 50px 25px;
+  
+    >.t{
+     height: 85px;
+     font-family: 'Lato Black';
+     display: flex;
+     align-items: center;
+     color: #212121;
+     font-size: 27px;
+    }
+
+    >.t2{
+    height: 64px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: flex-start;
+    column-gap: 16px;
+              .i2{
+                  min-width: 165px;
+                  height: 35px;
+                  background: rgb(0, 0, 0);
+                  color: rgb(255, 255, 255);
+                  font-family: "Lato Bold";
+                  border-radius: 7px;
+                  padding: 0px 15px;
+                  font-size: 15px;
+                  -webkit-box-pack: center;
+                  justify-content: center;
+                  cursor: pointer;
+      }
+      >.clear {
+        color: #3c8dbc;
+        cursor: pointer;
+      }
+    }
+}
+    @media only screen and (max-width: 600px) {
+        >.c {
+
+
+         >.t {
+            justify-content: center;
+            font-size: 22px;
+            
+        }
+        .c_box_selector {
+                max-width: 100%;
+            }
+    }
+
+   
+    @media only screen and (max-width: 480px) {
+        >.c {
+          margin: 0 15px 50px 15px;
+        }   
+       
+    }
+ }
+
+ `
+
+export default HomeStyled 

@@ -1,0 +1,105 @@
+// src/data.ts
+export const userData = {
+    user: {
+      name: "João da Silva",
+      cpf: "123.456.789-00",
+      dateOfBirth: "1985-04-23",
+      gender: "M",
+      email: "joao.silva@example.com",
+      phone: "+55 11 91234-5678",
+    },
+    menu: [
+      {
+        label: "Principal",
+        content: {
+          lastAccess: "2024-08-23 18:45:00",
+          accountStatus: "Ativa",
+          notifications: ["Notificação 1", "Notificação 2"],
+          recentActions: ["Alteração de endereço", "Recarga"],
+        },
+      },
+      {
+        label: "Veículos",
+        content: [
+          {
+            type: "Carro",
+            model: "Fiat Uno",
+            year: "2015",
+            plate: "ABC-1234",
+            status: "Regular",
+          },
+          {
+            type: "Moto",
+            model: "Honda CG 150",
+            year: "2018",
+            plate: "XYZ-5678",
+            status: "Atraso no licenciamento",
+          },
+        ],
+      },
+      {
+        label: "Endereço",
+        content: {
+          currentAddress: {
+            street: "Rua das Flores",
+            number: "123",
+            complement: "Apt 45",
+            neighborhood: "Centro",
+            city: "São Paulo",
+            state: "SP",
+            zipCode: "01234-567",
+          },
+          previousAddresses: [
+            {
+              street: "Av. Paulista",
+              number: "987",
+              neighborhood: "Bela Vista",
+              city: "São Paulo",
+              state: "SP",
+              zipCode: "01310-000",
+            },
+          ],
+        },
+      },
+      {
+        label: "Contatos",
+        content: {
+          email: "joao.silva@example.com",
+          phone: "+55 11 91234-5678",
+          emergencyContact: {
+            name: "Maria da Silva",
+            relation: "Esposa",
+            phone: "+55 11 98765-4321",
+          },
+        },
+      },
+      {
+        label: "Condomínios",
+        content: {
+          email: "joao.silva@example.com",
+          phone: "+55 11 91234-5678",
+          emergencyContact: {
+            name: "Maria da Silva",
+            relation: "Esposa",
+            phone: "+55 11 98765-4321",
+          },
+        },
+      },
+      {
+        label: "Recargas",
+        content: [
+          {
+            date: "2024-08-01 14:00:00",
+            amount: "R$ 50,00",
+            status: "Concluída",
+          },
+          {
+            date: "2024-07-20 10:30:00",
+            amount: "R$ 30,00",
+            status: "Concluída",
+          },
+        ],
+      },
+    ],
+  };
+  

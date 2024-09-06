@@ -1,0 +1,50 @@
+import { Box, Button, Modal, Typography } from '@mui/material';
+import React from 'react';
+import { modalStyle } from '../ArquivoStyle';
+
+interface ConfirmationModalProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, onConfirm }) => {
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="confirmation-modal-title"
+      aria-describedby="confirmation-modal-description"
+      BackdropProps={{
+        onClick: (e) => e.stopPropagation() // Prevent closing on outside click
+      }}
+    >
+      <Box sx={modalStyle} >
+        <Typography variant="h6" id="confirmation-modal-title">
+          Confirmar Saída
+        </Typography>
+        <Typography variant="subtitle1" style={{ marginTop: 20 }}>
+          Você tem certeza de que deseja sair? Todas as informações não salvas serão perdidas.
+        </Typography>
+        <Box sx={{ marginTop: 2, display: 'flex', justifyContent: 'space-between' }}>
+          <Button
+            onClick={onConfirm}
+            color="primary"
+            variant="contained"
+          >
+            Confirmar
+          </Button>
+          <Button
+            onClick={onClose}
+            color="secondary"
+            variant="outlined"
+          >
+            Cancelar
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  );
+};
+
+export default ConfirmationModal;

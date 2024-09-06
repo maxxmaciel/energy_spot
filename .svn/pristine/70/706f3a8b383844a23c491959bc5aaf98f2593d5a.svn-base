@@ -1,0 +1,191 @@
+
+import { GridRowIdGetter, GridValidRowModel } from "@mui/x-data-grid"
+import styled from "styled-components"
+import { API } from "../../Ajax"
+import Grid from "../../components/Grid/Grid"
+import { GridColsDef } from "../../components/Grid/GridColsDef"
+import WindowComponent from "../../components/WindowComponent/WindowComponent"
+import useFetchData from "../../components/useFetchData"
+import spinner from '../../images/spinner.gif'
+import { dev, std } from "../../std"
+import { calendarClosed } from "./Home/Home"
+import { ensureParms } from "./Home/useHome"
+import { DevicesC, PropsSection, theme } from "./Sections"
+
+
+
+
+
+const DevicesStyled = styled.div`
+  .c_img_loading{
+    height: 400px;
+    z-index: 10;
+    position: absolute;
+  }
+  > .c{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    column-gap: 25px;
+    color: black;
+
+    >.c_h{
+      width: 100%;
+    }
+  }
+  `
+
+export interface IDevices {
+  frozen: [],
+  frozen_total: number;
+  offline: IDevicesOnAndOff[];
+  online: IDevicesOnAndOff[];
+  offline_total: number;
+  online_total: number;
+}
+
+export interface IDevicesOnAndOff {
+  created: string;
+  acl: number[];
+  d: number;
+  f: number;
+  ip: string;
+  k: string;
+  modified: string;
+  n: string;
+  o: number;
+  or: number;
+  s: string;
+  sid: number;
+}
+
+
+
+export class CDevices implements IDevices {
+  frozen: [];
+  frozen_total: number;
+  offline: IDevicesOnAndOff[];
+  online: IDevicesOnAndOff[];
+  offline_total: number;
+  online_total: number;
+
+  constructor(
+    frozen: [] = [],
+    offline: IDevicesOnAndOff[] = [],
+    online: IDevicesOnAndOff[] = []
+  ) {
+    this.frozen = frozen;
+    this.frozen_total = frozen.length;
+    this.offline = offline;
+    this.offline_total = offline.length;
+    this.online = online;
+    this.online_total = online.length;
+  }
+}
+
+const cols = new GridColsDef({
+  default: {
+    width: 100,
+    align: 'left',
+    headerAlign: 'left',
+  },
+  items: [
+    {
+      field: 'n',
+      headerName: 'ID',
+      width: 100,
+    },
+    {
+      width: 240,
+      field: 'name',
+      headerName: 'Name',
+    },
+    {
+      field: 'ots',
+      headerName: 'OTS',
+    },
+    {
+      field: 'v',
+      headerName: 'Watchers',
+      width: 180,
+    },
+    {
+      field: 'otsd',
+      headerName: 'Dwell time, sec.',
+      width: 180,
+    },
+    {
+      field: 'vd',
+      headerName: 'Attention time, sec.',
+      width: 180,
+    },
+  ],
+});
+
+
+const DevicesSection = ({ devices, devices_parms_url, FetchAnalyticsData, DateRange }: PropsSection) => {
+  dev.log("DevicesSection")
+
+
+
+  var invalidKey = FetchAnalyticsData !== null && calendarClosed
+
+
+  if (invalidKey) {
+    dev.log("invalidKey = true DevicesSection")
+  } else {
+    dev.log("invalidKey = false DevicesSection")
+  }
+
+  const { data: dados, error, loading } = useFetchData<any>("Analytics/Analytics.vtt", 'get',
+    { action: "getCloudSeemetrix", source: "seemetrix", user: API.user_id, method: "devices", base_url: "statistics", parms: ensureParms(devices_parms_url, "YYYY-MM-DD HH", "device") },
+    invalidKey);
+
+  if (dados) {
+    var rows = dados?.data.o
+    var a = std.groupBy<IDevicesOnAndOff>(devices, (row: IDevicesOnAndOff) => row.d)
+
+    for (let idx in rows) {
+      let no = rows[idx];
+      if (a[no.n]) {
+        no.name = a[no.n][0].n
+      }
+    }
+
+    dev.log(a)
+    const getRowId: GridRowIdGetter<GridValidRowModel> = (row) => row.n;
+    DevicesC.items[0].Component =
+      <div style={{ marginTop: "25px" }}>
+        <Grid themeProps={theme} getRowId={getRowId}
+          columns={cols.getItems()} rows={rows} />
+      </div>
+  }
+
+  return (
+    <DevicesStyled>
+      <div className='c'>
+        {DevicesC.items.map((data, idx) =>
+          <div className={"c_h _s_" + idx} key={"device_" + idx}>
+            <WindowComponent.Root  >
+              <WindowComponent.Header >
+                {data.IconWindow}
+                <WindowComponent.Title>
+                  {data.Title}
+                </WindowComponent.Title>
+              </WindowComponent.Header>
+              <WindowComponent.Content height={data.Height}>
+                {loading && <div className="c_img_loading"><img className="" src={spinner} alt="" /></div>}
+                {error && <div className="c_img_loading"><img className="" src={spinner} alt="" /></div>}
+                {dados && data.Component}
+              </WindowComponent.Content>
+
+            </WindowComponent.Root>
+          </div>
+        )}
+      </div>
+    </DevicesStyled>
+  )
+}
+
+export default DevicesSection;
+

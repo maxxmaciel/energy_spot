@@ -1,0 +1,486 @@
+import { ChangeEvent, FormEvent, RefObject, useCallback } from 'react';
+import { StructureTreeNode, TreeNode } from 'react-treebeard';
+import { axiosGet, axiosPost } from '../../../Ajax';
+import useFetchData from '../../../components/useFetchData';
+import { useUploadFranqueadoContext } from '../UploadFranqueado/useUploadFranqueadoContext';
+import { StructureTreeNo, TreeNodeResp } from './UploadFranqueadoTypes';
+
+
+interface IUseUploadFranqueado {
+  fileInputRef?: RefObject<HTMLInputElement>
+  refInputTypeArchive?: RefObject<HTMLInputElement>
+  refInputOrientation?: RefObject<HTMLInputElement>
+}
+
+class CTreeNode implements TreeNode {
+  name: string;
+  id: number;
+  cod_arquivo_estrutura: number;
+  cod_arquivo_estrutura_pai: number;
+  cod_projeto: number;
+  total: number;
+  cod_arquivo: number;
+  arquivos: number;
+  e_arquivo_tipo: string | null;
+  e_orientacao: string | null;
+  toggled: boolean;
+  active: boolean;
+  children: TreeNode[];
+
+  constructor(item: Partial<StructureTreeNode & { nome: string }> = {}) {
+    this.name = item.nome || '';
+    this.id = item.cod_arquivo_estrutura || 0;
+    this.cod_arquivo_estrutura = item.cod_arquivo_estrutura || 0;
+    this.cod_arquivo_estrutura_pai = item.cod_arquivo_estrutura_pai || 0;
+    this.cod_projeto = item.cod_projeto || 0;
+    this.total = item.total || 0;
+    this.cod_arquivo = item.cod_arquivo || 0;
+    this.arquivos = item.arquivos || 0;
+    this.e_arquivo_tipo = item.e_arquivo_tipo || null;
+    this.e_orientacao = item.e_orientacao || null;
+    this.toggled = false;
+    this.active = false;
+    this.children = [];
+  }
+}
+
+
+export const useUploadFranqueado = ({ fileInputRef, refInputOrientation, refInputTypeArchive }: IUseUploadFranqueado = {}) => {
+  const {
+    files, setFiles,
+    filesUploaded, setFilesUploaded,
+    open, setOpen,
+    errorModalOpen, setErrorModalOpen,
+    loadingModal, setLoadingModal,
+    currentFileIndex, setCurrentFileIndex,
+    formError, setFormError,
+    FormDataInp, setFormDataInp,
+    errorMessages, setErrorMessages,
+    errorFileNames, setErrorFileNames,
+    CodFather, setCodFather,
+    TreePanel, setTreePanel,
+    activeNode,
+    setActiveNode,Context
+  } = useUploadFranqueadoContext();
+  console.log('render useUploadFranqueado')
+  
+
+
+  const transformDataToTree = (data: TreeNodeResp): TreeNode => {
+    const root: TreeNode = {
+      name: 'Raiz',
+      id: 0,
+      cod_arquivo_estrutura: 0,
+      cod_arquivo_estrutura_pai: 0,
+      cod_projeto: 0,
+      total: 0,
+      cod_arquivo: 0,
+      arquivos: 0,
+      e_arquivo_tipo: null,
+      e_orientacao: null,
+      toggled: true,
+      active: true,
+      children: []
+    };
+    // const map = std.groupBy<StructureTreeNode & { nome: string }>(data.data, (item) => item.cod_arquivo_estrutura)
+    //   console.log(map)
+
+    var lookup: { [key: string]: TreeNode } = {};
+    lookup[0] = root;
+
+    data.data.forEach((item: StructureTreeNode & { nome: string }) => {
+      const node = new CTreeNode(item);
+
+      lookup[item.cod_arquivo_estrutura] = node;
+
+      if (lookup[item.cod_arquivo_estrutura_pai]) {
+        lookup[item.cod_arquivo_estrutura_pai].children!.push(node);
+      }
+    });
+
+    data.data.forEach((item: StructureTreeNode & { nome: string }) => {
+      const node = new CTreeNode(item);
+
+      lookup[item.cod_arquivo_estrutura] = node;
+
+      if (item.cod_arquivo_estrutura_pai !== 0 &&
+        lookup[item.cod_arquivo_estrutura_pai]) {
+        lookup[item.cod_arquivo_estrutura_pai].children!.push(node);
+      }
+
+
+    });
+
+    // Remove the children property if it is empty
+    const removeEmptyChildren = (node: TreeNode) => {
+      if (node.children && node.children.length === 0) {
+        delete node.children;
+      } else if (node.children) {
+        node.children.forEach(child => removeEmptyChildren(child));
+      }
+    };
+
+    removeEmptyChildren(root);
+
+    return root;
+  };
+
+
+  const handleValidateFile = useCallback(async (fileBlobs: StructureTreeNo[]) => {
+
+    const validFiles: StructureTreeNo[] = [];
+    const invalidFiles: string[] = [];
+    const invalidMessages: string[] = [];
+
+    setLoadingModal(true);
+    for (const file of fileBlobs) {
+      try {
+        const response = await axiosGet('Arquivo/Arquivo.vtt', { action: 'validar_nome', NmArquivo: file.nome, CodArquivo: '' });
+        if (response.data.success) {
+          validFiles.push(file);
+        } else {
+          invalidFiles.push(file.nome);
+          invalidMessages.push(response.data.message);
+        }
+      } catch (error) {
+        console.error('Error validating file name:', error);
+      }
+    }
+
+    setFiles((prevValidFiles) => prevValidFiles.concat(validFiles));
+    if (invalidFiles.length > 0) {
+      setErrorFileNames(invalidFiles);
+      setErrorMessages(invalidMessages);
+      setErrorModalOpen(true); // Open error modal 
+    }
+    setLoadingModal(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleDropChange = useCallback(async (event: React.DragEvent<HTMLDivElement>) => {
+    if (event.dataTransfer.files) {
+      const selectedFiles = Array.from(event.dataTransfer.files);
+
+      const fileBlobs = await getBlobArchives(selectedFiles)
+      handleValidateFile(fileBlobs)
+
+    }
+  }, [])
+
+  const getBlobArchives = async (selectedFiles: File[]): Promise<StructureTreeNo[]> => {
+    const fileBlobs: StructureTreeNo[] = await Promise.all(selectedFiles.map(async (file) => {
+      const blob = await file.arrayBuffer(); // Get archive blob do arquivo
+      return {
+        cod_arquivo_estrutura: 0,
+        cod_arquivo_estrutura_pai: 0,
+        cod_projeto: 0,
+        total: 0,
+        cod_arquivo: 0,
+        arquivos: 0,
+        e_arquivo_tipo: identifyFileType(file.name),
+        e_orientacao: null,
+        nome: file.name,
+        blob: blob,
+        uploading: false,
+        uploadProgress: 0,
+        uploaded: false
+      };
+    }));
+
+    return fileBlobs;
+  };
+
+
+
+
+  const handleFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const selectedFiles = Array.from(event.target.files);
+
+      const fileBlobs = await getBlobArchives(selectedFiles)
+      handleValidateFile(fileBlobs)
+
+    }
+    if (fileInputRef?.current?.value) {
+      fileInputRef.current.value = "";
+    }
+  }, []);
+
+  const handleOpenModal = useCallback((index: number) => {
+    setCurrentFileIndex(index);
+    setOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setOpen(false);
+    setCurrentFileIndex(null);
+    resetFormFields();
+  }, []);
+
+
+  const handleCloseSingleErrorModal = useCallback((index: number) => {
+    setErrorFileNames(prev => prev.filter((_, i) => i !== index));
+    setErrorMessages(prev => prev.filter((_, i) => i !== index));
+    if (errorFileNames.length === 1) {
+      setErrorModalOpen(false);
+    }
+  }, []);
+
+  const handleFormChange = useCallback((e: ChangeEvent<{ name?: string; value: unknown }>) => {
+    const { name, value } = e.target;
+    if (name) {
+      setFormDataInp(prevState => ({ ...prevState, [name]: value as string }));
+    }
+  }, []);
+
+  const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (currentFileIndex === null) return;
+
+    const currentFile = files[currentFileIndex];
+    if (currentFile.blob) {
+      const file = new File([currentFile.blob], currentFile.nome);
+      const parms = new DadosFormulario({
+        Arquivo: file,
+        NmArquivo: currentFile.nome,
+        TxDescricao: FormDataInp.description,
+        EArquivoTipo: FormDataInp.fileType,
+        EOrientacao: FormDataInp.orientation,
+        TxObs: FormDataInp.notes
+      });
+      try {
+        const response = await axiosPost('/Arquivo/Arquivo.vtt', parms.formData, {
+          headers: {
+            'Content-Type': currentFile.e_arquivo_tipo,
+            'X-File-Name': currentFile.nome,
+          },
+          onUploadProgress: (progressEvent: ProgressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setFiles(prevFiles => {
+                const updatedFiles = [...prevFiles];
+                updatedFiles[currentFileIndex] = { ...updatedFiles[currentFileIndex], uploading: true, uploadProgress: percentCompleted };
+                return updatedFiles;
+              });
+            }
+          },
+        });
+
+        // Verifica a resposta do servidor
+        if (response.data.success) {
+          // Atualiza o status para "upload completo"
+          setFiles(prevFiles => {
+            const updatedFiles = [...prevFiles];
+            updatedFiles[currentFileIndex] = { ...updatedFiles[currentFileIndex], uploading: false, uploaded: true };
+            return updatedFiles;
+          });
+
+          setFilesUploaded(prev => {
+            prev.push(currentFile)
+            return prev
+          }
+          )
+
+          // Reseta o formulário
+          setFormDataInp({
+            fileType: '',
+            orientation: '',
+            description: '',
+            notes: ''
+          });
+
+          // Fecha a modal ou abre a próxima se houver mais arquivos
+          if (files.length > 1) {
+            setCurrentFileIndex((prevIndex) => (prevIndex !== null && prevIndex < files.length - 1 ? prevIndex + 1 : 0));
+          } else {
+            handleCloseModal();
+          }
+        } else {
+          // Atualiza o status para "upload falhou", remove o arquivo da lista e pula para o próximo
+          setFiles(prevFiles => {
+            const updatedFiles = [...prevFiles];
+            updatedFiles.splice(currentFileIndex, 1); // Remove o arquivo da lista
+            return updatedFiles;
+          });
+
+          // Atualiza o índice do arquivo atual
+          setCurrentFileIndex(prevIndex => {
+            if (prevIndex !== null && files.length > 1) {
+              return prevIndex < files.length ? prevIndex : prevIndex - 1;
+            }
+            return null;
+          });
+
+          // Exibe a modal de erro
+          setErrorFileNames([currentFile.nome]);
+          setErrorMessages([response.data.message]);
+          setErrorModalOpen(true);
+        }
+      } catch (error) {
+        console.error('Erro ao enviar o arquivo:', error);
+
+        // Atualiza o status para "upload falhou", remove o arquivo da lista e pula para o próximo
+        setFiles(prevFiles => {
+          const updatedFiles = [...prevFiles];
+          updatedFiles.splice(currentFileIndex, 1); // Remove o arquivo da lista
+          return updatedFiles;
+        });
+
+        // Atualiza o índice do arquivo atual
+        setCurrentFileIndex(prevIndex => {
+          if (prevIndex !== null && files.length > 1) {
+            return prevIndex < files.length ? prevIndex : prevIndex - 1;
+          }
+          return null;
+        });
+
+
+        // Exibe a modal de erro
+        setErrorFileNames([currentFile.nome]);
+        setErrorMessages(['Erro ao enviar o arquivo.']);
+        setErrorModalOpen(true);
+      }
+    }
+
+
+  }, []);
+  const validateForm = () => {
+    return FormDataInp.fileType !== '' && FormDataInp.orientation !== '';
+  };
+
+  const identifyFileType = (fileName: string): string => {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    if (!extension) return '';
+
+    switch (extension) {
+      case 'mp4':
+      case 'avi':
+      case 'mkv':
+        return 'Video';
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return 'Imagem';
+      case 'mp3':
+      case 'wav':
+      case 'flac':
+        return 'Audio';
+
+      default:
+        return '';
+    }
+  };
+
+  const resetFormFields = () => {
+    if (refInputTypeArchive?.current) refInputTypeArchive.current.value = '';
+    if (refInputOrientation?.current) refInputOrientation.current.value = '';
+  };
+
+  return {
+    files,
+    open,
+    errorModalOpen,
+    currentFileIndex,
+    FormDataInp,
+    errorMessages,
+    errorFileNames,
+    handleFileChange,
+    handleDropChange,
+    handleOpenModal,
+    handleCloseModal,
+    handleCloseSingleErrorModal,
+    handleFormChange,
+    handleSubmit,
+    validateForm,
+    loadingModal,
+    setFormError,
+    formError,
+    filesUploaded,
+    transformDataToTree,
+    setFilesUploaded,
+    CodFather, setCodFather,
+    TreePanel, setTreePanel,
+    activeNode,
+    setActiveNode,
+    Context
+  };
+};
+
+
+type DadosFormularioParams = {
+  Arquivo: any;
+  action?: string;
+  Sites?: any[];
+  CodProjeto?: string;
+  CodDat?: string;
+  EArquivoStatus?: string;
+  CaminhoOriginal?: string;
+  CaminhoPadronizado?: string;
+  TxExtensao?: string;
+  FlagCapaOk?: string;
+  FlagIconOk?: string;
+  FlagPreviewGifOk?: string;
+  FlagPreviewAviOk?: string;
+  FlagPreviewFlvOk?: string;
+  FlagDatOk?: string;
+  FlagServArqOk?: string;
+  FlagRemovido?: string;
+  CodArquivoOrigem?: string;
+  TsAlteracao?: string;
+  EArquivoUtilizacao?: string;
+  NmArquivo?: string;
+  EArquivoTipo?: string;
+  EOrientacao?: string;
+  TxDescricao?: string;
+  TxObs?: string;
+  FlagVisivelCliente?: boolean;
+  CodArquivo?: string;
+  DhPublicacao?: string;
+  FrameCapa?: string;
+  FrameIcon?: number;
+  FrameLayoutLayer?: number;
+  FramePreviewGIF?: number;
+};
+
+class DadosFormulario {
+  formData: FormData;
+
+  constructor(params: DadosFormularioParams) {
+    this.formData = new FormData();
+
+    // Adiciona as propriedades ao FormData
+    this.formData.append('Arquivo', params.Arquivo);
+    this.formData.append('action', params.action || "insert");
+    this.formData.append('Sites', JSON.stringify(params.Sites || []));
+    this.formData.append('CodProjeto', params.CodProjeto || "");
+    this.formData.append('CodDat', params.CodDat || "");
+    this.formData.append('EArquivoStatus', params.EArquivoStatus || "");
+    this.formData.append('CaminhoOriginal', params.CaminhoOriginal || "");
+    this.formData.append('CaminhoPadronizado', params.CaminhoPadronizado || "");
+    this.formData.append('TxExtensao', params.TxExtensao || "");
+    this.formData.append('FlagCapaOk', params.FlagCapaOk || "");
+    this.formData.append('FlagIconOk', params.FlagIconOk || "");
+    this.formData.append('FlagPreviewGifOk', params.FlagPreviewGifOk || "");
+    this.formData.append('FlagPreviewAviOk', params.FlagPreviewAviOk || "");
+    this.formData.append('FlagPreviewFlvOk', params.FlagPreviewFlvOk || "");
+    this.formData.append('FlagDatOk', params.FlagDatOk || "");
+    this.formData.append('FlagServArqOk', params.FlagServArqOk || "");
+    this.formData.append('FlagRemovido', params.FlagRemovido || "");
+    this.formData.append('CodArquivoOrigem', params.CodArquivoOrigem || "");
+    this.formData.append('TsAlteracao', params.TsAlteracao || "");
+    this.formData.append('EArquivoUtilizacao', params.EArquivoUtilizacao || "Usuario");
+    this.formData.append('NmArquivo', params.NmArquivo || "");
+    this.formData.append('EArquivoTipo', params.EArquivoTipo || "");
+    this.formData.append('EOrientacao', params.EOrientacao || "");
+    this.formData.append('TxDescricao', params.TxDescricao || "");
+    this.formData.append('TxObs', params.TxObs || "");
+    this.formData.append('FlagVisivelCliente', JSON.stringify(params.FlagVisivelCliente ?? true));
+    this.formData.append('CodArquivo', params.CodArquivo || "");
+    this.formData.append('DhPublicacao', params.DhPublicacao || "");
+    this.formData.append('FrameCapa', params.FrameCapa?.toString() || '0');
+    this.formData.append('FrameIcon', params.FrameIcon?.toString() || '0');
+    this.formData.append('FrameLayoutLayer', params.FrameLayoutLayer?.toString() || "0");
+    this.formData.append('FramePreviewGIF', params.FramePreviewGIF?.toString() || "0");
+  }
+}
+

@@ -1,0 +1,305 @@
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import styled from "styled-components"
+import { API } from "../../Ajax"
+import { GroupText } from "../../components/GroupText/GroupTextRoot"
+import WindowComponent from "../../components/WindowComponent/WindowComponent"
+import useFetchData from "../../components/useFetchData"
+import spinner from '../../images/spinner.gif'
+import { dev, std } from "../../std"
+import { CDayData, CDayWeekData, IDayWeekData } from "./DemographicsSection"
+import { calendarClosed } from "./Home/Home"
+import { ensureParms } from "./Home/useHome"
+import { GeneralC, IGenericsData, PropsSection } from "./Sections"
+
+interface GraphicProps<T> {
+  c1: string;
+  c2: string;
+  name1: string;
+  name2: string;
+  dataKey1?: string;
+  dataKey2?: string;
+  XAxis1?: string;
+  data: T[];
+}
+
+const Graphic = <T,>({ c1, c2, data, name1, name2, dataKey1 = 'd', dataKey2 = 'p', XAxis1 = 'name' }: GraphicProps<T>) => {
+  return (
+    <ResponsiveContainer>
+      <BarChart width={300} height={250} data={data} style={{ marginTop: "10px" }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey={XAxis1} />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey={dataKey1} fill={c1} name={name1} />
+        <Bar dataKey={dataKey2} fill={c2} name={name2} />
+      </BarChart>
+    </ResponsiveContainer>
+
+
+  )
+}
+
+
+
+
+export const GeneralSection = ({ devices_parms_url, FetchAnalyticsData, calendarClosedCount }: PropsSection) => {
+
+
+  var invalidKey = FetchAnalyticsData !== null && calendarClosed
+
+  if (invalidKey) {
+    dev.log("invalidKey = true DevicesSection")
+  } else {
+    dev.log("invalidKey = false DevicesSection")
+  }
+
+  const RequestPromise1 = useFetchData<IDates>("Analytics/Analytics.vtt", 'get',
+    { action: "getCloudSeemetrix", source: "seemetrix", user: API.user_id, method: "dates", base_url: "statistics", parms: ensureParms(devices_parms_url, "DD") }, invalidKey);
+
+  const RequestPromise3 = useFetchData<IDates>("Analytics/Analytics.vtt", 'get',
+    { action: "getCloudSeemetrix", source: "seemetrix", user: API.user_id, method: "dates", base_url: "statistics", parms: ensureParms(devices_parms_url, "HH") }, invalidKey);
+
+
+  const loading = RequestPromise1.loading || RequestPromise3.loading;
+  const error = RequestPromise1.error || RequestPromise3.error;
+  const dados = RequestPromise1.data && RequestPromise3.data;
+
+  //std.formatNumber
+  if (dados) {
+    var ots_n = RequestPromise1.data?.data?.ots || 0
+    var v_n = RequestPromise1.data?.data?.v || 0
+    var ots = ots_n
+    var v = v_n
+    var cr = std.calcPercent(v_n, ots_n)
+    var otsd_n = RequestPromise1.data?.data?.otsd || 0
+    var vd_n = RequestPromise1.data?.data?.vd || 0
+    var otsd = otsd_n
+    var vd = vd_n
+    var ar = std.calcPercent(vd_n, otsd_n)
+
+    if (RequestPromise1.data?.data?.o && RequestPromise3.data?.data.o) {
+      const CAcrossAverageDay = new CDayHoursDataGeneral();
+      CAcrossAverageDay.ensureGenericsData(RequestPromise3.data.data)
+      const AcrossAverageDay = CAcrossAverageDay.dataGenerics
+
+      const CAcrossAverageWeek = new CDayWeekDataGeneral();
+      CAcrossAverageWeek.ensureGenderAge(RequestPromise1.data.data)
+      const AcrossAverageWeek = Object.values(CAcrossAverageWeek.dataWeek)
+      //CDayWeekDataGeneral
+      GeneralC.items[0].Component = <GroupText t_1={ots} t_2='pessoas' />
+      GeneralC.items[1].Component = <GroupText t_1={v} t_2='pessoas' />
+      GeneralC.items[2].Component = <GroupText t_1={<>{cr}</>} t_2='' />
+      GeneralC.items[3].Component = <GroupText t_1={<>{std.msToM(otsd)}</>} t_2='' />
+      GeneralC.items[4].Component = <GroupText t_1={std.msToM(vd)} t_2='' />
+      GeneralC.items[5].Component = <GroupText t_1={ar} t_2='' />
+      GeneralC.items[6].Component = <Graphic c1="rgb(37,78,123)" c2="rgb(51,122,183)" data={[{ d: ots, p: v }]} name1="OTS" name2="Observadores" />
+      //RequestPromise1.data.data.o 
+      GeneralC.items[7].Component = <Graphic<IDayWeekData> XAxis1="date" c1="rgb(37,78,123)" c2="rgb(51,122,183)" data={AcrossAverageWeek} name1="OTS" name2="Observadores" dataKey1="ots" dataKey2="v" />
+      GeneralC.items[8].Component = <Graphic<IGenericsDataWithDate> XAxis1="date" c1="rgb(37,78,123)" c2="rgb(51,122,183)" data={AcrossAverageDay} name1="OTS" name2="Observadores" dataKey1="ots" dataKey2="v" />
+      GeneralC.items[9].Component = <Graphic c1="rgb(45,107,34)" c2="rgb(138,180,70)" data={[{ d: otsd, p: vd }]} name1="Dwell" name2="Attention" />
+      GeneralC.items[10].Component = <Graphic<IDayWeekData> XAxis1="date" c1="rgb(45,107,34)" c2="rgb(138,180,70)" data={AcrossAverageWeek} name1="Dwell" name2="Attention" dataKey1="otsd" dataKey2="vd" />
+      GeneralC.items[11].Component = <Graphic<IGenericsDataWithDate> XAxis1="date" c1="rgb(45,107,34)" c2="rgb(138,180,70)" data={AcrossAverageDay} name1="Dwell" name2="Attention" dataKey1="otsd" dataKey2="vd" />
+    }
+
+  }
+
+
+
+  return (
+
+    <GeneralSectionStyled>
+      <div className='c'>
+        {GeneralC.items.map((data, idx) => {
+
+          return (
+            <div className={"c_h _s_" + idx} key={"general_" + idx}>
+              <WindowComponent.Root  >
+                <WindowComponent.Header>
+                  {data.IconWindow}
+                  <WindowComponent.Title >
+                    {data.Title}
+                  </WindowComponent.Title>
+                </WindowComponent.Header>
+                <WindowComponent.Content height={data.Height}>
+
+                  {loading && <div className="c_img_loading"><img className="" src={spinner} alt="" /></div>}
+                  {error && <div className="c_img_loading"><img className="" src={spinner} alt="" /></div>}
+                  {dados && data.Component}
+                </WindowComponent.Content>
+
+              </WindowComponent.Root>
+            </div>
+          )
+        }
+        )}
+      </div>
+    </GeneralSectionStyled>
+  )
+}
+
+interface IGenericsDataWithDate extends IGenericsData {
+  date: string
+}
+
+class CGenericsData implements IGenericsDataWithDate {
+  date: string;
+  n: string
+  o: IGenericsData[]
+  ots: number
+  otsd: number
+  t: string | number
+  v: number
+  vd: number
+  constructor(data: IGenericsDataWithDate) {
+    this.date = data.date
+    this.n = data.n
+    this.o = data.o
+    this.ots = data.ots
+    this.otsd = data.otsd
+    this.t = data.t
+    this.vd = data.vd
+    this.v = data.v
+  }
+
+}
+
+class CDayWeekDataGeneral extends CDayWeekData {
+  static CGenderAgeDefault = {
+    n: "",
+    o: [],
+    ots: 0,
+    otsd: 0,
+    t: 0,
+    v: 0,
+    vd: 0,
+  };
+
+  constructor() {
+    super(CGenericsData, CDayWeekDataGeneral);
+  }
+
+  ensureGenderAge(data: IGenericsData, field?: "vd" | "v"): void {
+    data.o.forEach((no, idx) => {
+
+      const week = CDayWeekData.fieldsWeekData[parseInt(no.n)];
+
+      if (Object.keys(this.dataWeek).includes(week)) {
+        //  const day = no.n as keyof IDayWeekData;
+        this.addWeekData<IGenericsData>(week, {
+          n: week,
+          o: no.o,
+          ots: no.ots,
+          otsd: no.otsd,
+          t: no.t,
+          v: no.v,
+          vd: no.vd,
+        }, CGenericsData)
+      }
+    })
+  }
+}
+
+
+class CDayHoursDataGeneral extends CDayData {
+  dataGenerics: CGenericsData[] = [];
+
+  static CGenderAgeDefault = {
+    n: "",
+    o: [],
+    ots: 0,
+    otsd: 0,
+    t: 0,
+    v: 0,
+    vd: 0,
+  };
+
+  constructor() {
+    super();
+    for (let hour = 0; hour < 24; hour++) {
+      this.dataGenerics[hour] = new CGenericsData({
+        date: this.formatHour(hour),
+        ...CDayHoursDataGeneral.CGenderAgeDefault
+      });
+    }
+  }
+  addHourDataGenerics(hour: number, hourData: IGenericsData): void {
+    if (this.dataGenerics[hour]) {
+      this.dataGenerics[hour] = new CGenericsData({ date: this.formatHour(hour), ...hourData });
+    } else {
+      throw new Error(`Invalid hour: ${hour}. Please use format "00" to "23".`);
+    }
+  }
+
+
+  ensureGenericsData(data: IGenericsData, field: "vd" | "v" = 'vd') {
+
+    data.o.forEach(no => {
+      this.addHourDataGenerics(parseInt(no.n), new CGenericsData({
+        date: no.n + ":00",
+        n: "",
+        o: no.o,
+        ots: no.ots,
+        otsd: no.otsd,
+        t: no.t,
+        v: no.v,
+        vd: no.vd,
+      }))
+    })
+  }
+}
+
+const GeneralSectionStyled = styled.div`
+> .c{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 25px;
+
+  >.c_h{
+    width: 100%;
+  }
+  @media (min-width: 1100px) {
+    ._s_0, 
+    ._s_1, 
+    ._s_2, 
+    ._s_3,
+    ._s_4,
+    ._s_5{
+      width: calc(16.66% - 31px);
+    }
+    
+    ._s_6,
+    ._s_7,
+    ._s_8,
+    ._s_9,
+    ._s_10,
+    ._s_11{
+      width:calc(33.33% - 25px);
+
+    }
+  }
+
+  @media (min-width: 700px) and (max-width: 1099px)  {
+    ._s_0, 
+    ._s_1, 
+    ._s_2, 
+    ._s_3,
+    ._s_4,
+    ._s_5{
+      width: calc(50% - 12.5px);
+     
+    }
+  }
+} 
+`
+interface IDates {
+  begin: string;
+  data: IGenericsData;
+  dt_format: string;
+  end: string;
+  ok: number;
+  path: string;
+  user_id: number;
+}
+

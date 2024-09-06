@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/build/static/css/main.fa1d4fa5.css",
+    "main.js": "/build/static/js/main.0aa4c6ab.js",
+    "static/js/453.4d42720c.chunk.js": "/build/static/js/453.4d42720c.chunk.js",
+    "static/media/Lato-Regular.ttf": "/build/static/media/Lato-Regular.633ffe4a4b5b7277cc35.ttf",
+    "static/media/Lato-Bold.ttf": "/build/static/media/Lato-Bold.76eff6487a1e1011628f.ttf",
+    "static/media/Lato-Black.ttf": "/build/static/media/Lato-Black.4a4aceb102c7911879fd.ttf",
+    "static/media/spinner.gif": "/build/static/media/spinner.9d15a45377100df55e65.gif",
+    "index.html": "/build/index.html",
+    "main.fa1d4fa5.css.map": "/build/static/css/main.fa1d4fa5.css.map",
+    "main.0aa4c6ab.js.map": "/build/static/js/main.0aa4c6ab.js.map",
+    "453.4d42720c.chunk.js.map": "/build/static/js/453.4d42720c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fa1d4fa5.css",
+    "static/js/main.0aa4c6ab.js"
+  ]
+}

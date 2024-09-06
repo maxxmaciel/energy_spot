@@ -1,0 +1,67 @@
+import { Box, Button, Modal, Toolbar, Typography } from "@mui/material";
+import { useState } from "react";
+import { UploadFranqueadoProvider, useUploadFranqueadoContext } from '../../UploadFranqueado/useUploadFranqueadoContext';
+import Arquivo from "../Arquivo";
+import { modalStyle } from "../ArquivoStyle";
+import { UseModalsReturn } from "./useModals";
+
+
+interface IZoneFilesModal {
+    openZoneFiles: boolean;
+    onClose: () => void;
+    InstanceUseModals: UseModalsReturn;
+}
+
+const ZoneFilesModal = ({ openZoneFiles, onClose, InstanceUseModals }: IZoneFilesModal) => {
+    const { styleGlobalModal, setLinkingMachinesState } = InstanceUseModals;
+
+    const handleSelectMedia = () => {
+        setLinkingMachinesState(prev => ({
+            ...prev,
+            isConfigModalOpen: true
+        }))
+        onClose();
+    }
+
+    const contextFather = useUploadFranqueadoContext();
+
+    const [FileSelected, setFileSelected] = useState(false);
+
+
+
+    return (<Modal
+        open={openZoneFiles}
+        onClose={onClose}
+        aria-labelledby="configuration-modal-title"
+        aria-describedby="configuration-modal-description"
+        BackdropProps={{
+            onClick: handleSelectMedia // Prevent closing on outside click
+        }}
+    >
+        <Box sx={{ ...modalStyle, width: '64.5%', maxWidth: '800px', padding: 4 }} style={styleGlobalModal}>
+            <Typography variant="h6" id="configuration-modal-title">
+                Arquivos
+            </Typography>
+
+            <div style={{ height: "60vh" }}>
+                <UploadFranqueadoProvider Context={[contextFather]} >
+                    <Arquivo onlyZoneFiles={true} hasContextMenu={false} />
+                </UploadFranqueadoProvider>
+            </div>
+            <Toolbar>
+                <Button
+                    onClick={handleSelectMedia}
+                    color="primary"
+                    variant="contained"
+                    style={{ marginTop: '20px' }}
+                    disabled={FileSelected}
+                >
+                    SELECIONAR MÍDIA
+                </Button>
+
+            </Toolbar>
+        </Box>
+    </Modal>)
+};
+
+export default ZoneFilesModal;

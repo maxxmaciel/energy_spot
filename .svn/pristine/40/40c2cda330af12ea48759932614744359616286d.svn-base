@@ -1,0 +1,42 @@
+import { Button, Typography } from '@mui/material';
+import React from 'react';
+import ConfirmationModal from './ConfirmationModal';
+import { UseModalsReturn } from './useModals';
+
+interface CloseButtonProps {
+  InstanceUseModals: UseModalsReturn;
+}
+
+const CloseButton: React.FC<CloseButtonProps> = ({ InstanceUseModals }) => {
+  const [openConfirmationModal, setOpenConfirmationModal] = React.useState(false);
+  const {resetStates} = InstanceUseModals
+
+  const handleClick = () => {
+    setOpenConfirmationModal(true);
+  };
+
+  const handleConfirmClose = () => {
+    setOpenConfirmationModal(false);
+    resetStates();
+  };
+
+  const handleCancelClose = () => {
+    setOpenConfirmationModal(false);
+  };
+
+  return (
+    <>
+      <Button onClick={handleClick} style={{ position: 'absolute', top: 10, right: 10 }}>
+        <Typography variant="h6">X</Typography>
+      </Button>
+      <ConfirmationModal
+        open={openConfirmationModal}
+        onClose={handleCancelClose}
+        onConfirm={handleConfirmClose}
+   
+      />
+    </>
+  );
+};
+
+export default CloseButton;

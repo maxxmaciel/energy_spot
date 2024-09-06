@@ -1,0 +1,42 @@
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import PasteIcon from '@mui/icons-material/ContentPaste';
+import CreateIcon from '@mui/icons-material/CreateNewFolder';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Tooltip } from '@mui/material';
+import Button from '@mui/material/Button';
+import React from 'react';
+import { iconButtonStyle } from './ArquivoStyle';
+import { ToolbarProps } from './ArquivoTypes';
+
+
+
+const Toolbar: React.FC<ToolbarProps> = ({ onCreateFolder, onCopy, onPaste, onDelete }) => {
+  return (
+    <div
+      style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px', background: '#f8f9fa', borderTop: '1px solid #e0e0e0' }}
+    >
+      <Tooltip title="Criar" arrow>
+        <Button onClick={onCreateFolder} style={iconButtonStyle}>
+          <CreateIcon />
+        </Button>
+      </Tooltip>
+      <Tooltip title="Copiar" arrow>
+        <Button onClick={onCopy} style={iconButtonStyle}>
+          <CopyIcon />
+        </Button>
+      </Tooltip>
+      <Tooltip title="Colar" arrow>
+        <Button onClick={onPaste} style={iconButtonStyle}>
+          <PasteIcon />
+        </Button>
+      </Tooltip>
+      <Tooltip title="Excluir" arrow>
+        <Button onClick={onDelete} style={iconButtonStyle}>
+          <DeleteIcon />
+        </Button>
+      </Tooltip>
+    </div>
+  );
+};
+
+export default Toolbar;

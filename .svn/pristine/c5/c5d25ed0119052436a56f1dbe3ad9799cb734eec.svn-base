@@ -1,0 +1,313 @@
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import PasteIcon from '@mui/icons-material/ContentPaste';
+import CreateIcon from '@mui/icons-material/CreateNewFolder';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+import { Button, createTheme, Menu, MenuItem, ThemeProvider, Tooltip } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { StructureTreeNo } from '../UploadFranqueado/UploadFranqueadoTypes';
+import { useUploadFranqueado } from '../UploadFranqueado/useUploadFranqueado';
+import { filePreviewStyle, previewContainerStyle } from './ArquivoStyle';
+import { ZoneFilesProps } from './ArquivoTypes';
+import DropZone from './DropZone';
+import CreateCampaignModal from './Modals/CreateCampaingModal';
+import CreateFolderModal from './Modals/CreateFolderModal';
+
+const getVideoThumbnail = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const videoElement = document.createElement('video');
+    videoElement.src = URL.createObjectURL(blob);
+
+    videoElement.onloadedmetadata = () => {
+      videoElement.currentTime = 1;
+    };
+
+    videoElement.onseeked = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL());
+      } else {
+        reject(new Error('Não foi possível obter o contexto do canvas'));
+      }
+    };
+
+    videoElement.onerror = () => {
+      reject(new Error('Erro ao carregar o vídeo para o thumbnail'));
+    };
+  });
+};
+
+
+
+const renderFilePreview = (file: StructureTreeNo, videoThumbnail: string | null) => {
+  var blob: string = "";
+  if (file.blob && file.e_arquivo_tipo) {
+    blob = URL.createObjectURL(new Blob([file.blob], { type: file.e_arquivo_tipo }));
+  }
+
+  return (
+    <div style={filePreviewStyle}>
+      {file.e_arquivo_tipo?.startsWith('Imagem') ? (
+        <img
+          src={blob}
+          alt={file.nome}
+          onError={(e) => {
+            e.currentTarget.src = ''; // Remove o src atual
+            e.currentTarget.alt = 'Imagem não encontrada';
+            e.currentTarget.style.display = 'none'; // Esconde a tag img
+          }}
+          style={{ width: '100%', height: '100px', objectFit: 'cover' }}
+        />
+      ) : file.e_arquivo_tipo?.startsWith('Video') && videoThumbnail ? (
+        <img
+          src={videoThumbnail}
+          alt={file.nome}
+          style={{ width: '100%', height: '100px', objectFit: 'cover' }}
+        />
+      ) : (
+        <div style={previewContainerStyle}>
+          {file.e_arquivo_tipo === null ? (
+            '📁'
+          ) : (
+            <ImageNotSupportedIcon style={{ fontSize: 50 }} />
+          )}
+        </div>
+      )}
+
+      <p style={{ marginTop: '5px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {file.nome}
+      </p>
+    </div>
+  );
+};
+
+const defaultTheme = createTheme({
+  palette: {
+    primary: {
+      main: 'rgb(31, 45, 61) ',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
+
+const ZoneFiles: React.FC<ZoneFilesProps> = ({ handleClickArchiveProp, hasContextMenu, files, onDrop, onDragOver, onCreateFolder, onCreateCampaign, onCopy, onPaste, onDelete }) => {
+  const [draggedFile, setDraggedFile] = useState<StructureTreeNo | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number } | null>(null);
+  const [selectedFile, setSelectedFile] = useState<StructureTreeNo | null>(null);
+  const [openModal, setOpenModal] = useState<'campaign' | 'folder' | false>(false);
+  const [videoThumbnails, setVideoThumbnails] = useState<{ [key: string]: string }>({});
+  const [path, setPath] = useState<StructureTreeNo[]>([]);
+  const { handleDropChange, files: uploadedFiles, activeNode } = useUploadFranqueado();
+
+  useEffect(() => {
+    files.forEach((file) => {
+      if (file?.e_arquivo_tipo?.startsWith('Video') && file.blob) {
+        const blob = new Blob([file.blob], { type: file.e_arquivo_tipo });
+        getVideoThumbnail(blob)
+          .then((thumbnail) => {
+            setVideoThumbnails((prev) => ({ ...prev, [file.nome]: thumbnail }));
+          })
+          .catch((error) => {
+            console.error('Erro ao gerar thumbnail do vídeo:', error);
+          });
+      }
+    });
+
+    return () => {
+      Object.values(videoThumbnails).forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [files]);
+
+  const handleDragStart = (file: StructureTreeNo) => (event: React.DragEvent<HTMLDivElement>) => {
+    setDraggedFile(file);
+  };
+
+  const handleDropZoneFiles = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    // Ensure folders are not handled
+    /*
+    if (draggedFile && draggedFile.type === 'application/x-directory') {
+      return;
+    }*/
+    // handleDropChange(event);
+    onDrop(event);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    onDragOver(event);
+  };
+
+  const handleContextMenu = (file: StructureTreeNo | null) => (event: React.MouseEvent<HTMLDivElement>) => {
+    if (hasContextMenu) {
+      event.preventDefault();
+      const target = event.target as HTMLElement;
+      const targetClassList = target.classList;
+      const isDragDrop = targetClassList.contains("c_drag_drop");
+      const fileIsNull = file === null;
+
+      if ((!fileIsNull && !isDragDrop) || (fileIsNull && isDragDrop)) {
+        //file.e_arquivo_tipo === null 
+        setSelectedFile(!fileIsNull ? file.e_arquivo_tipo === null ? null : file : file);
+
+        setContextMenu(
+          contextMenu === null
+            ? {
+              mouseX: event.clientX - 2,
+              mouseY: event.clientY - 4,
+            }
+            : null,
+        );
+      }
+    }
+
+
+
+    // setSelectedFile(file)
+
+  };
+
+  const handleClose = () => {
+    setContextMenu(null);
+  };
+
+  const handleOpenModal = (type: 'campaign' | 'folder') => {
+    setOpenModal(type);
+    handleClose();
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleClickArchive = (file: StructureTreeNo | null) => (event: React.MouseEvent<HTMLDivElement>) => {
+    console.log("handleClickArchive")
+    handleClickArchiveProp(file)
+    if (file && file.e_arquivo_tipo === null) { // Verifica se é uma pasta
+      setPath((prevPath) => [...prevPath, file]);
+    }
+
+  };
+
+  const handleBack = (event: any) => {
+    if (path.length > 0) {
+      const newPath = [...path];
+      newPath.pop(); // Remove o último nó do caminho
+      setPath(newPath);
+      const parent = newPath[newPath.length - 1] || null;
+      handleClickArchiveProp(parent); // Atualiza para o nó pai
+    }
+  };
+
+  const ButtonBack = useRef<HTMLButtonElement>(null);
+
+
+  // bug do onDrop, caso tenha algum componente dentro dele como estava o CreateCampaignModal, o onDrop se propaga para ele
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <div
+        style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}
+        onDragOver={handleDragOver}
+        onDrop={handleDropZoneFiles}
+      >
+        <div style={{ flex: 1, padding: '40px  20px', overflowY: 'auto', overflowX: "hidden" }} onContextMenu={handleContextMenu(null)}
+          className='c_drag_drop'>
+          <DropZone />
+          <Button
+            variant="contained"
+            startIcon={<ArrowBackIcon />}
+            ref={ButtonBack}
+            data-t={0}
+            onClick={handleBack}
+            sx={{
+              backgroundColor: 'rgb(23, 23, 23)',
+              marginTop: 4,
+              margin: "26px 0 0 9px",
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'rgb(31, 45, 61) ', // cor de hover opcional
+              },
+            }}
+          >
+            Voltar
+          </Button>
+          <div style={{ marginTop: '20px' }} className='c_drag_drop'>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: "flex-start" }} className='c_drag_drop' >
+              {files.map((file, index) => (
+                <Tooltip key={index} title={file.nome} arrow>
+                  <div
+                    style={{ margin: '10px', flex: "1 1 '150px", display: "flex", justifyContent: "center", maxWidth: '150px' }}
+                    draggable
+                    onDragStart={handleDragStart(file)}
+                    onDragEnd={() => setDraggedFile(null)}
+                    onClick={handleClickArchive(file)}
+                    onContextMenu={handleContextMenu(file)}
+                  >
+                    {renderFilePreview(file, videoThumbnails[file.nome] || null)}
+                  </div>
+                </Tooltip>
+              ))}
+            </div>
+          </div>
+        </div>
+        {
+          hasContextMenu &&
+
+          <Menu
+            open={contextMenu !== null}
+            onClose={handleClose}
+            anchorReference="anchorPosition"
+            anchorPosition={
+              contextMenu !== null
+                ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+                : undefined
+            }
+          >
+            <MenuItem onClick={() => handleOpenModal('folder')}>
+              <CreateIcon style={{ marginRight: 5 }} />
+              Criar Pasta
+            </MenuItem>
+            {selectedFile && (
+              <MenuItem onClick={() => handleOpenModal('campaign')}>
+                <CreateIcon style={{ marginRight: 5 }} />
+                Criar Campanha
+              </MenuItem>
+            )}
+            <MenuItem onClick={onCopy}>
+              <CopyIcon style={{ marginRight: 5 }} />
+              Copiar
+            </MenuItem>
+            <MenuItem onClick={onPaste}>
+              <PasteIcon style={{ marginRight: 5 }} />
+              Colar
+            </MenuItem>
+            <MenuItem onClick={onDelete}>
+              <DeleteIcon style={{ marginRight: 5 }} />
+              Deletar
+            </MenuItem>
+          </Menu>
+        }
+      </div>
+      <CreateFolderModal
+        open={openModal === 'folder'}
+        onClose={handleCloseModal}
+        onCreateFolder={onCreateFolder}
+      />
+
+      <CreateCampaignModal
+        open={openModal === 'campaign'}
+        onClose={handleCloseModal}
+        onCreateCampaign={() => onCreateCampaign(selectedFile)}
+      />
+    </ThemeProvider>
+  );
+};
+
+export default ZoneFiles;

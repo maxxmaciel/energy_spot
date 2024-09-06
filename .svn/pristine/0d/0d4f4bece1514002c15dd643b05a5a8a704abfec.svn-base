@@ -1,0 +1,163 @@
+import ComputerIcon from '@mui/icons-material/Computer';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import { Box, Button, IconButton, Modal, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+
+import { modalStyle } from '../ArquivoStyle';
+import { LinkingMachinesModalProps } from '../ArquivoTypes';
+import { useGetMachinesFree } from '../useArquivo';
+import CloseButton from './CloseButton';
+import ConfigurationModal from './ConfigurationModal'; // Import the ConfigurationModal component
+
+const LinkingMachinesModal: React.FC<LinkingMachinesModalProps> = ({ open, onClose, InstanceUseModals }) => {
+    const {
+        linkingMachinesState,
+        setLinkingMachinesState,
+        handleDrop,
+        handleDragStart,
+        moveAllMachines,
+        handleScheduleConfig,
+        styleGlobalModal,
+        ConfigurationModalState,
+        calculateScreenConfigs
+    } = InstanceUseModals;
+
+    const MachinesFree = useGetMachinesFree();
+    if (MachinesFree.data) {
+        console.log(MachinesFree.data)
+
+    }
+
+    const handleCreateLink = () => {
+        // setLinkingMachinesState(prev => ({ ...prev, isConfigModalOpen: true }));
+        calculateScreenConfigs();
+        console.log('criando vinculo');
+    };
+
+    useEffect(() => {
+        if (ConfigurationModalState.screenConfigs.length > 0) {
+            if (ConfigurationModalState.screenConfigs[0].TotalTelas === 1) {
+                setLinkingMachinesState(prev => ({
+                    ...prev,
+                    isScheduleConfig: true
+                }));
+            } else {
+                setLinkingMachinesState(prev => ({
+                    ...prev,
+                    isConfigModalOpen: true
+                }));
+            }
+
+
+            onClose();
+        }
+
+        // eslint-disable-next-line 
+    }, [ConfigurationModalState.screenConfigs])
+
+    return (
+        <>
+            <Modal
+                open={open}
+                onClose={onClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                BackdropProps={{
+                    onClick: (e) => e.stopPropagation() // Prevent closing on outside click
+                }}
+            >
+                <Box sx={{ ...modalStyle, width: '80%', maxWidth: '1200px' }} style={styleGlobalModal}>
+                    <CloseButton InstanceUseModals={InstanceUseModals} />
+                    <Typography variant="h6" id="modal-modal-title">
+                        Vincular Máquinas
+                    </Typography>
+                    <Typography variant="subtitle1" style={{ marginTop: 10 }}>
+                        Arraste as máquinas disponíveis para a lista de selecionadas para vincular. Você pode também mover máquinas da lista selecionada de volta para a lista disponível.
+                    </Typography>
+                    <Box
+                        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}
+                    >
+                        <Box
+                            sx={{ width: '45%', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+                            onDrop={(e) => handleDrop(e, 'available')}
+                            onDragOver={(e) => e.preventDefault()}
+                        >
+                            <Typography variant="subtitle2" style={{ display: 'flex', alignItems: 'center' }}>
+                                <ComputerIcon sx={{ marginRight: 1 }} /> Máquinas Disponíveis
+                            </Typography>
+                            <div style={{ height: "200px", overflow: "scroll" }}>
+                                {linkingMachinesState.availableMachines.map((machine) => (
+                                    <Box
+                                        key={machine.Maquina}
+                                        draggable
+                                        onDragStart={(e) => handleDragStart(e, machine.Maquina)}
+                                        sx={{ margin: '5px 0', padding: '5px', border: '1px solid #ddd', borderRadius: '3px', display: 'flex', alignItems: 'center' }}
+                                    >
+                                        <ComputerIcon sx={{ marginRight: 1 }} />
+                                        {machine.Maquina} - {machine.Maquina} Telas
+                                    </Box>
+                                ))}
+                            </div>
+                        </Box>
+                        <Box
+                            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginX: 2 }}
+                        >
+                            <IconButton
+                                onClick={() => moveAllMachines('selected')}
+                                color="primary"
+                            >
+                                <DoubleArrowIcon sx={{ transform: 'rotate(0deg)' }} />
+                            </IconButton>
+                            <IconButton
+                                onClick={() => moveAllMachines('available')}
+                                color="secondary"
+                            >
+                                <DoubleArrowIcon sx={{ transform: 'rotate(180deg)' }} />
+                            </IconButton>
+                        </Box>
+                        <Box
+                            sx={{ width: '45%', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+                            onDrop={(e) => handleDrop(e, 'selected')}
+                            onDragOver={(e) => e.preventDefault()}
+                        >
+                            <Typography variant="subtitle2" style={{ display: 'flex', alignItems: 'center' }}>
+                                <ComputerIcon sx={{ marginRight: 1 }} /> Máquinas Selecionadas
+                            </Typography>
+                            <div style={{ height: "200px", overflow: "scroll" }}>
+                                {linkingMachinesState.selectedMachines.map((machine) => (
+                                    <Box
+                                        key={machine.Maquina}
+                                        draggable
+                                        onDragStart={(e) => handleDragStart(e, machine.Maquina)}
+                                        sx={{ margin: '5px 0', padding: '5px', border: '1px solid #ddd', borderRadius: '3px', display: 'flex', alignItems: 'center' }}
+                                    >
+                                        <ComputerIcon sx={{ marginRight: 1 }} />
+                                        {machine.Maquina} - {machine.TotalTelas} Telas
+                                    </Box>
+                                ))}
+                            </div>
+                        </Box>
+                    </Box>
+                    <Button
+                        onClick={handleCreateLink}
+                        color="primary"
+                        variant="contained"
+                        style={{ marginTop: '20px' }}
+                        disabled={linkingMachinesState.selectedMachines.length === 0}
+                    >
+                        Criar Vínculo
+                    </Button>
+                </Box>
+            </Modal>
+
+            <ConfigurationModal
+                open={linkingMachinesState.isConfigModalOpen}
+                onClose={() => setLinkingMachinesState(prev => ({ ...prev, isConfigModalOpen: false }))}
+                selectedMachines={linkingMachinesState.selectedMachines}
+                InstanceUseModals={InstanceUseModals}
+            />
+        </>
+    );
+};
+
+export default LinkingMachinesModal;

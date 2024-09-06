@@ -1,0 +1,99 @@
+import React from 'react';
+import { Navigate, Route, BrowserRouter as Router, Routes, useParams } from 'react-router-dom';
+import { AuthenticatedRoute, checkAuthenticatedSession, isAuthenticated } from './components/Authentication';
+import Footer from './components/Footer/Footer';
+import ModalShouldLogin from './components/ModalShouldLogin/ModalShouldLogin';
+import NewCondominioForm from './pages/Condominio/NewCondominioForm';
+import GatewayForm from './pages/Gateway/GatewayForm';
+import Home from './pages/Home/Home/Home';
+import Login from './pages/Login/Login';
+import EnergyStationForm from './pages/Station/NewStationForm';
+import NewUserForm from './pages/Usuario/NewUserForm';
+import NewVeiculoForm from './pages/Veiculo/NewVeiculoForm';
+import { dev } from './std';
+import Unauthorized from './pages/Unauthorized';
+import AccessDenied from './pages/AccessDenied';
+import UserBlocked from './pages/UserBlocked';
+import Usuarios from './pages/Usuario/Usuarios';
+import Dashboard from './pages/Dashboard/Dashboard';
+
+
+
+
+interface ValidatedRouteProps {
+  element: React.ReactElement;
+}
+
+export const allowedRoutes: { [key: string]: string[] } = {
+  Analytics: ["General", "Demographics", "Devices", "Over Time", "Media"],
+  Franqueado: ["Home", "Upload", "Arquivo"]
+};
+
+const ValidatedRoute: React.FC<ValidatedRouteProps> = ({ element }) => {
+  const { navbar = "", section = "" } = useParams<{ navbar: string, section?: string }>();
+
+  const allowedSections = allowedRoutes[navbar] || [];
+  const isValidSection = section ? allowedSections.includes(section) : true;
+
+  if (!allowedRoutes[navbar] || !isValidSection) {
+    return <Navigate to="/" />;
+  }
+
+  return element;
+};
+
+
+
+const App: React.FC = () => {
+  dev.log(isAuthenticated());
+  dev.log(checkAuthenticatedSession());
+
+  const cHome = {
+    component: (parm: any) => <Home Clients={parm.data} />
+  };
+
+  const routesHome = [
+    { path: PathsURL.navbar, element: <ValidatedRoute element={<AuthenticatedRoute {...cHome} />} /> },
+    { path: PathsURL.navbarSection, element: <ValidatedRoute element={<AuthenticatedRoute {...cHome} />} /> },
+  ];
+
+  return (
+    <>
+    <div style={{paddingBottom:36}}>
+    <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          {routesHome.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+          <Route path="/Condominio" element={<NewCondominioForm />} />
+          <Route path="/Veiculo" element={<NewVeiculoForm />} />
+          <Route path="/Usuario" element={<NewUserForm />} />
+          <Route path="/Usuarios" element={<Usuarios />} />
+          <Route path="/Home" element={<Dashboard />} />
+          <Route path="/AcessoNegado" element={<AccessDenied />} />
+          <Route path="/UsuarioBloqueado" element={<UserBlocked/>} />
+          <Route path="/ShouldLogin" element={<ModalShouldLogin open={true} onClose={function (): void {
+            throw new Error('Function not implemented.');
+          }} />} />
+            <Route path="/Station" element={<EnergyStationForm />} />
+            <Route path="/Gateway" element={<GatewayForm />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+      <Footer />
+    </div>
+      
+    </>
+
+
+  );
+};
+
+export default App;
+
+export const PathsURL = {
+  navbar: "/:navbar",
+  navbarSection: "/:navbar/:section",
+};
+

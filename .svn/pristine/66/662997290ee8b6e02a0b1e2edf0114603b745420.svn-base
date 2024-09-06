@@ -1,0 +1,19 @@
+import { StructureTreeNode } from "react-treebeard";
+import { ResponseSuccess } from "../../../@types/types";
+
+export interface IFormDataInp {
+  fileType: string;
+  orientation: string;
+  description: string;
+  notes: string;
+}
+
+export type StructureTreeNo = StructureTreeNode &  { nome: string }
+
+export interface TreeNodeResp extends ResponseSuccess {
+  data: StructureTreeNo[]
+  foundRows: string;
+  error: string | null;
+  metaData: string | null;
+  message: string | null;
+}

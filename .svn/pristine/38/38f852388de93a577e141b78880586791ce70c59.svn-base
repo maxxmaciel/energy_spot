@@ -1,0 +1,30 @@
+import { Box, Paper, Typography } from "@mui/material";
+import React from "react";
+
+type VehicleContentProps = {
+  content: {
+    type: string;
+    model: string;
+    year: string;
+    plate: string;
+    status: string;
+  }[];
+};
+
+const VehicleContent: React.FC<VehicleContentProps> = ({ content }) => {
+  return (
+    <Box>
+      {content.map((vehicle, index) => (
+        <Paper key={index} sx={{ padding: 2, marginBottom: 2 }} style={{cursor:'pointer'}}>
+          <Typography variant="h6">{vehicle.type}</Typography>
+          <Typography>Modelo: {vehicle.model}</Typography>
+          <Typography>Ano: {vehicle.year}</Typography>
+          <Typography>Placa: {vehicle.plate}</Typography>
+          <Typography>Status: {vehicle.status}</Typography>
+        </Paper>
+      ))}
+    </Box>
+  );
+};
+
+export default VehicleContent;
